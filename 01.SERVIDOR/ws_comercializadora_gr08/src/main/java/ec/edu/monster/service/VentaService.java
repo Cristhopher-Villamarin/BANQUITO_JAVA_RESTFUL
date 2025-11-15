@@ -148,9 +148,11 @@ public class VentaService {
             
             // Construir JSON request
             String jsonInputString = String.format(
-                "{\"cedula\":\"%s\",\"montoElectrodomestico\":%.2f,\"plazoMeses\":12}",
-                cedula, monto
+                "{\"cedula\":\"%s\",\"montoElectrodomestico\":%s,\"plazoMeses\":12}",
+                cedula, monto.toString().replace(',', '.')
             );
+            
+            LOGGER.log(Level.INFO, "Enviando solicitud a Banquito: {0}", jsonInputString);
             
             try (java.io.OutputStream os = conn.getOutputStream()) {
                 byte[] input = jsonInputString.getBytes("utf-8");
@@ -158,6 +160,8 @@ public class VentaService {
             }
             
             int responseCode = conn.getResponseCode();
+            LOGGER.log(Level.INFO, "Response Code de Banquito: {0}", responseCode);
+            
             if (responseCode == 200) {
                 try (java.io.BufferedReader br = new java.io.BufferedReader(
                         new java.io.InputStreamReader(conn.getInputStream(), "utf-8"))) {
@@ -169,7 +173,12 @@ public class VentaService {
                     
                     // Simple JSON parsing para verificar si el crédito fue aprobado
                     String jsonResponse = response.toString();
-                    return jsonResponse.contains("\"creditoAprobado\":true");
+                    LOGGER.log(Level.INFO, "Respuesta de Banquito: {0}", jsonResponse);
+                    
+                    boolean aprobado = jsonResponse.contains("\"creditoAprobado\":true");
+                    LOGGER.log(Level.INFO, "Crédito aprobado: {0}", aprobado);
+                    
+                    return aprobado;
                 }
             }
             
