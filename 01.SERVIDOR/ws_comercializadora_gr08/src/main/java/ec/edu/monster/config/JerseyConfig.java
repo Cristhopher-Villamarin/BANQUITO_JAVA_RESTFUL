@@ -2,6 +2,7 @@ package ec.edu.monster.config;
 
 import ec.edu.monster.controller.VentaController;
 import ec.edu.monster.controller.ElectrodomesticoController;
+import ec.edu.monster.controller.AuthController;
 import jakarta.ws.rs.ApplicationPath;
 import jakarta.ws.rs.core.Application;
 import java.util.HashSet;
@@ -15,6 +16,7 @@ public class JerseyConfig extends Application {
         Set<Class<?>> resources = new HashSet<>();
         resources.add(VentaController.class);
         resources.add(ElectrodomesticoController.class);
+        resources.add(AuthController.class);
         return resources;
     }
 }

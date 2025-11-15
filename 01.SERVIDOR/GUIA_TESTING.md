@@ -27,6 +27,158 @@
 
 ---
 
+---
+
+## 🔐 AUTENTICACIÓN Y AUTORIZACIÓN
+
+### 1️⃣ Health Check Auth
+```bash
+GET http://localhost:8080/ws_comercializadora_gr08/api/auth/health
+```
+**Respuesta Esperada:**
+```json
+{
+  "status": "OK",
+  "message": "Auth Service is running",
+  "timestamp": "2025-11-15T00:00:00"
+}
+```
+
+### 2️⃣ Login - Usuario MONSTER (Solo ventas, sin CRUD)
+```bash
+POST http://localhost:8080/ws_comercializadora_gr08/api/auth/login
+Content-Type: application/json
+```
+**Request:**
+```json
+{
+  "username": "MONSTER",
+  "password": "MONSTER9"
+}
+```
+**Respuesta Esperada:**
+```json
+{
+  "autenticado": true,
+  "mensaje": "Autenticación exitosa",
+  "username": "MONSTER",
+  "rol": "USER",
+  "token": "TOKEN_MONSTER_1731648000000",
+  "timestamp": "2025-11-15T00:00:00"
+}
+```
+
+### 3️⃣ Login - Usuario admin (Acceso completo including CRUD)
+```bash
+POST http://localhost:8080/ws_comercializadora_gr08/api/auth/login
+Content-Type: application/json
+```
+**Request:**
+```json
+{
+  "username": "admin",
+  "password": "admin"
+}
+```
+**Respuesta Esperada:**
+```json
+{
+  "autenticado": true,
+  "mensaje": "Autenticación exitosa",
+  "username": "admin",
+  "rol": "ADMIN",
+  "token": "TOKEN_admin_1731648000000",
+  "timestamp": "2025-11-15T00:00:00"
+}
+```
+
+### 4️⃣ Login Fallido - Credenciales incorrectas
+```bash
+POST http://localhost:8080/ws_comercializadora_gr08/api/auth/login
+Content-Type: application/json
+```
+**Request:**
+```json
+{
+  "username": "MONSTER",
+  "password": "incorrecta"
+}
+```
+**Respuesta Esperada (401 Unauthorized):**
+```json
+{
+  "autenticado": false,
+  "mensaje": "Contraseña incorrecta",
+  "username": null,
+  "rol": null,
+  "token": null,
+  "timestamp": "2025-11-15T00:00:00"
+}
+```
+
+### 5️⃣ Ver Usuarios Disponibles
+```bash
+GET http://localhost:8080/ws_comercializadora_gr08/api/auth/usuarios
+```
+**Respuesta Esperada:**
+```json
+{
+  "usuarios": {
+    "MONSTER": "USER (Solo ventas, sin CRUD)",
+    "admin": "ADMIN (Acceso completo including CRUD)"
+  },
+  "timestamp": "2025-11-15T00:00:00"
+}
+```
+
+---
+
+## 🛡️ PROTECCIÓN DE ENDPOINTS
+
+### 🔓 Rutas Públicas (No requieren autenticación)
+- `/api/auth/login`
+- `/api/auth/health`
+- `/api/auth/usuarios`
+- `/api/ventas/health`
+- `/api/ventas/electrodomesticos` (GET)
+- `/api/electrodomesticos/health`
+
+### 🔒 Rutas Protegidas (Requieren token Bearer)
+- Todos los endpoints de ventas (excepto health y electrodomésticos GET)
+- Todos los endpoints CRUD de electrodomésticos
+
+### 👑 Endpoints Exclusivos ADMIN
+- `POST /api/electrodomesticos` (Crear)
+- `PUT /api/electrodomesticos/{id}` (Actualizar)
+- `DELETE /api/electrodomesticos/{id}` (Eliminar)
+
+### 🧪 Comandos cURL para Testing de Autenticación
+```bash
+# Login como MONSTER
+curl -X POST http://localhost:8080/ws_comercializadora_gr08/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"username":"MONSTER","password":"MONSTER9"}'
+
+# Login como admin
+curl -X POST http://localhost:8080/ws_comercializadora_gr08/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"username":"admin","password":"admin"}'
+
+# Intentar CRUD con usuario MONSTER (debería fallar 403)
+curl -X POST http://localhost:8080/ws_comercializadora_gr08/api/electrodomesticos \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer TOKEN_MONSTER_$(date +%s)000" \
+  -d '{"nombre":"Test","precioVenta":99.99}'
+
+# CRUD con usuario admin (debería funcionar)
+curl -X POST http://localhost:8080/ws_comercializadora_gr08/api/electrodomesticos \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer TOKEN_admin_$(date +%s)000" \
+  -d '{"nombre":"Test Admin","precioVenta":199.99}'
+```
+
+---
+
 ## 🏦 BANQUITO - Endpoints de Testing
 
 ### 1️⃣ Health Check
