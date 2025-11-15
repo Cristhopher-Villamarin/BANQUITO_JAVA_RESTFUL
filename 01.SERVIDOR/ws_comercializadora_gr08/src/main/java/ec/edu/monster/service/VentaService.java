@@ -135,10 +135,11 @@ public class VentaService {
             stmt.setInt(1, idElectrodomestico);
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
-                return new Electrodomestico(
-                    rs.getString("nombre"),
-                    rs.getBigDecimal("precioVenta")
-                );
+                Electrodomestico electrodomestico = new Electrodomestico();
+                electrodomestico.setIdElectrodomestico(rs.getInt("idElectrodomestico"));
+                electrodomestico.setNombre(rs.getString("nombre"));
+                electrodomestico.setPrecioVenta(rs.getBigDecimal("precioVenta"));
+                return electrodomestico;
             }
         }
         return null;

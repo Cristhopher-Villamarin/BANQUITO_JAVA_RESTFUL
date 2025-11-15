@@ -223,17 +223,151 @@ GET http://localhost:8080/ws_comercializadora_gr08/api/ventas/electrodomesticos
 [
   {
     "idElectrodomestico": 1,
-    "nombre": "Refrigeradora LG 18 pies",
-    "precioVenta": 1299.99
+    "nombre": "Refrigeradora Samsung 420L",
+    "precioVenta": 899.99
   },
   {
     "idElectrodomestico": 2,
-    "nombre": "Lavadora Samsung 20 libras",
-    "precioVenta": 899.50
+    "nombre": "Lavadora LG 18kg",
+    "precioVenta": 699.99
+  },
+  {
+    "idElectrodomestico": 3,
+    "nombre": "Televisor LED 55 pulgadas",
+    "precioVenta": 1299.99
+  },
+  {
+    "idElectrodomestico": 4,
+    "nombre": "Microondas Panasonic 1.2 pies",
+    "precioVenta": 249.99
+  },
+  {
+    "idElectrodomestico": 5,
+    "nombre": "Aire Acondicionado LG 12000 BTU",
+    "precioVenta": 799.99
   }
+]
+```
+
+---
+
+## 📱 CRUD COMPLETO DE ELECTRODOMÉSTICOS
+
+### 🆕 Crear Electrodoméstico (POST)
+```bash
+POST http://localhost:8080/ws_comercializadora_gr08/api/electrodomesticos
+Content-Type: application/json
+```
+**Request:**
+```json
+{
+  "nombre": "Licuadora Oster 600W",
+  "precioVenta": 89.99
+}
+```
+**Respuesta Esperada (201 Created):**
+```json
+{
+  "idElectrodomestico": 6,
+  "nombre": "Licuadora Oster 600W",
+  "precioVenta": 89.99
+}
+```
+
+### 📋 Listar Todos los Electrodomésticos (GET)
+```bash
+GET http://localhost:8080/ws_comercializadora_gr08/api/electrodomesticos
+```
+**Respuesta Esperada:**
+```json
+[
+  {
+    "idElectrodomestico": 1,
+    "nombre": "Refrigeradora Samsung 420L",
+    "precioVenta": 899.99
+  },
+  {
+    "idElectrodomestico": 2,
+    "nombre": "Lavadora LG 18kg",
+    "precioVenta": 699.99
+  },
   // ... todos los electrodomésticos
 ]
 ```
+
+### 🔍 Buscar Electrodoméstico por ID (GET)
+```bash
+GET http://localhost:8080/ws_comercializadora_gr08/api/electrodomesticos/1
+```
+**Respuesta Esperada:**
+```json
+{
+  "idElectrodomestico": 1,
+  "nombre": "Refrigeradora Samsung 420L",
+  "precioVenta": 899.99
+}
+```
+
+### ✏️ Actualizar Electrodoméstico (PUT)
+```bash
+PUT http://localhost:8080/ws_comercializadora_gr08/api/electrodomesticos/1
+Content-Type: application/json
+```
+**Request:**
+```json
+{
+  "nombre": "Refrigeradora Samsung 420L (Actualizado)",
+  "precioVenta": 949.99
+}
+```
+**Respuesta Esperada:**
+```json
+{
+  "idElectrodomestico": 1,
+  "nombre": "Refrigeradora Samsung 420L (Actualizado)",
+  "precioVenta": 949.99
+}
+```
+
+### 🗑️ Eliminar Electrodoméstico (DELETE)
+```bash
+DELETE http://localhost:8080/ws_comercializadora_gr08/api/electrodomesticos/6
+```
+**Respuesta Esperada:**
+```json
+{
+  "mensaje": "Electrodoméstico eliminado exitosamente"
+}
+```
+
+**⚠️ Nota:** No se puede eliminar un electrodoméstico si tiene detalles de factura asociados.
+
+### 🧪 Comandos cURL para Electrodomésticos
+```bash
+# Health Check del servicio de electrodomésticos
+curl -X GET http://localhost:8080/ws_comercializadora_gr08/api/electrodomesticos/health
+
+# Listar todos los electrodomésticos
+curl -X GET http://localhost:8080/ws_comercializadora_gr08/api/electrodomesticos
+
+# Buscar electrodoméstico por ID
+curl -X GET http://localhost:8080/ws_comercializadora_gr08/api/electrodomesticos/1
+
+# Crear nuevo electrodoméstico
+curl -X POST http://localhost:8080/ws_comercializadora_gr08/api/electrodomesticos \
+  -H "Content-Type: application/json" \
+  -d '{"nombre":"Licuadora Oster 600W","precioVenta":89.99}'
+
+# Actualizar electrodoméstico
+curl -X PUT http://localhost:8080/ws_comercializadora_gr08/api/electrodomesticos/1 \
+  -H "Content-Type: application/json" \
+  -d '{"nombre":"Refrigeradora Samsung 420L (Actualizado)","precioVenta":949.99}'
+
+# Eliminar electrodoméstico
+curl -X DELETE http://localhost:8080/ws_comercializadora_gr08/api/electrodomesticos/6
+```
+
+---
 
 ### 3️⃣ Procesar Venta en EFECTIVO (33% descuento)
 ```bash
