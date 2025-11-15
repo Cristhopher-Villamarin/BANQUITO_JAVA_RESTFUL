@@ -1,0 +1,49 @@
+-- =============================================
+-- COMERCIALIZADORA DE ELECTRODOMÉSTICOS
+-- SIN REGLAS DE NEGOCIO | SOLO ESTRUCTURA
+-- =============================================
+
+DROP DATABASE IF EXISTS comercializadora;
+CREATE DATABASE comercializadora CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE comercializadora;
+
+-- ELECTRODOMESTICO
+CREATE TABLE ELECTRODOMESTICO (
+    idElectrodomestico INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    precioVenta DECIMAL(12,2) NOT NULL
+) ENGINE=InnoDB;
+
+-- CLIENTE
+CREATE TABLE CLIENTE (
+    cedula VARCHAR(10) PRIMARY KEY,
+    nombre VARCHAR(100)
+) ENGINE=InnoDB;
+
+-- FACTURA
+CREATE TABLE FACTURA (
+    idFactura INT AUTO_INCREMENT PRIMARY KEY,
+    cedula VARCHAR(10),
+    fecha DATE NOT NULL,
+    formaPago VARCHAR(20) NOT NULL,
+    subtotal DECIMAL(12,2) NOT NULL,
+    descuento DECIMAL(12,2) NULL DEFAULT NULL,
+    total DECIMAL(12,2) NOT NULL,
+    estado VARCHAR(15) NOT NULL,
+    FOREIGN KEY (cedula) REFERENCES CLIENTE(cedula)
+        ON DELETE SET NULL ON UPDATE CASCADE
+) ENGINE=InnoDB;
+
+-- DETALLE_FACTURA
+CREATE TABLE DETALLE_FACTURA (
+    idDetalle INT AUTO_INCREMENT PRIMARY KEY,
+    idFactura INT NOT NULL,
+    idElectrodomestico INT NOT NULL,
+    cantidad INT NOT NULL,
+    precioUnitario DECIMAL(12,2) NOT NULL,
+    subtotalLinea DECIMAL(12,2) NOT NULL,
+    FOREIGN KEY (idFactura) REFERENCES FACTURA(idFactura)
+        ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (idElectrodomestico) REFERENCES ELECTRODOMESTICO(idElectrodomestico)
+        ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB;
