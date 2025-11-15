@@ -1,15 +1,15 @@
 # 🧪 Guía Completa de Testing - Sistema Banquito & Comercializadora
 
-## 📋 Datos de Prueba
+## 📋 Datos de Prueba (Actualizados)
 
 ### Clientes del Banco Banquito:
-| Cédula | Nombre | Estado Civil | Edad | Perfil | Saldo Cuenta |
-|--------|--------|--------------|------|--------|--------------|
-| 1050423282 | María José Andrade | Casado (C) | 35 | ✅ Cliente con depósitos | $4,500 |
-| 1752244770 | Carlos Moncayo | Soltero (S) | 27 | ✅ Cliente con depósitos | $2,800 |
-| 1752244887 | Ana Cristina Vallejo | Casado (C) | 37 | ✅ Cliente con depósitos | $8,500 |
-| 1002410692 | Jorge Luis Santillán | Soltero (S) | 24 | ❌ Menor 25, bajo saldo | $800 |
-| 1000846822 | Patricia Cevallos | Divorciado (D) | 38 | ❌ Tiene crédito ACTIVO | $3,200 |
+| Cédula | Nombre | Estado Civil | Edad | Perfil | Saldo Cuenta | Crédito Previo |
+|--------|--------|--------------|------|--------|--------------|----------------|
+| 1050423282 | María José Andrade | Casado (C) | 34 | ✅ Cliente con depósitos | $4,500 | Ninguno |
+| 1752244770 | Carlos Moncayo | Soltero (S) | 26 | ✅ Cliente con depósitos | $2,800 | PENDIENTE |
+| 1752244887 | Ana Cristina Vallejo | Casado (C) | 37 | ✅ Cliente con depósitos | $8,500 | Ninguno |
+| 1002410692 | Jorge Luis Santillán | Soltero (S) | 24 | ✅ Cliente con depósitos | $800 | RECHAZADO |
+| 1000846822 | Patricia Cevallos | Divorciado (D) | 38 | ✅ Cliente con depósitos | $3,200 | ACTIVO |
 
 ### Electrodomésticos Disponibles:
 | ID | Producto | Precio |
@@ -69,10 +69,10 @@ GET http://localhost:8080/ws_banquito_gr08/api/creditos/cliente/1002410692/sujet
 {
   "sujetoCredito": true,
   "mensaje": "Cliente cumple requisitos para ser sujeto de crédito",
-  "montoMaximoCredito": 1594.80
+  "montoMaximoCredito": 400.00
 }
 ```
-*Nota: Jorge es soltero con 24 años, por lo que la regla de edad >=25 para casados no aplica. Sí tiene depósitos en octubre (480.00 y 460.00), por lo que cumple requisitos.*
+*Nota: Jorge es soltero con 24 años, por lo que la regla de edad >=25 para casados no aplica. Tiene depósitos en octubre (480.00 y 460.00), por lo que cumple requisitos.*
 
 #### ❌ Caso RECHAZADO - Cliente sin depósitos recientes (simulado)
 ```bash
@@ -132,7 +132,7 @@ POST http://localhost:8080/ws_banquito_gr08/api/creditos/evaluar
 Content-Type: application/json
 ```
 
-#### ✅ Caso APROBADO - Carlos Moncayo
+#### ❌ Caso RECHAZADO - Carlos Moncayo (tiene crédito PENDIENTE)
 ```json
 {
   "cedula": "1752244770",
@@ -143,37 +143,17 @@ Content-Type: application/json
 **Respuesta Esperada:**
 ```json
 {
-  "sujetoCredito": true,
-  "mensaje": "Crédito aprobado",
-  "montoMaximoCredito": 4050.00,
-  "creditoAprobado": true,
-  "cuotaMensual": 81.25,
-  "idCredito": 1,
-  "tablaAmortizacion": [
-    {
-      "numeroCuota": 1,
-      "valorCuota": 81.25,
-      "interesPagado": 10.80,
-      "capitalPagado": 70.45,
-      "saldo": 829.05
-    },
-    {
-      "numeroCuota": 2,
-      "valorCuota": 81.25,
-      "interesPagado": 9.99,
-      "capitalPagado": 71.26,
-      "saldo": 757.79
-    }
-    // ... continuando hasta la cuota 12
-  ]
+  "sujetoCredito": false,
+  "creditoAprobado": false,
+  "mensaje": "El cliente ya tiene un crédito activo"
 }
 ```
 
 #### ❌ Caso RECHAZADO - Monto excede máximo
 ```json
 {
-  "cedula": "1752244770",
-  "montoElectrodomestico": 5000.00,
+  "cedula": "1002410692",
+  "montoElectrodomestico": 500.00,
   "plazoMeses": 12
 }
 ```
@@ -181,9 +161,39 @@ Content-Type: application/json
 ```json
 {
   "sujetoCredito": true,
-  "mensaje": "Monto excede el máximo de crédito aprobado",
-  "montoMaximoCredito": 4050.00,
+  "mensaje": "Monto del electrodoméstico excede el crédito máximo autorizado",
+  "montoMaximoCredito": 400.00,
   "creditoAprobado": false
+}
+```
+
+#### ✅ Caso APROBADO - Ana Cristina (perfil alto)
+```json
+{
+  "cedula": "1752244887",
+  "montoElectrodomestico": 1899.00,
+  "plazoMeses": 12
+}
+```
+**Respuesta Esperada:**
+```json
+{
+  "sujetoCredito": true,
+  "mensaje": "Crédito aprobado",
+  "montoMaximoCredito": 8100.00,
+  "creditoAprobado": true,
+  "cuotaMensual": 171.48,
+  "idCredito": 3,
+  "tablaAmortizacion": [
+    {
+      "numeroCuota": 1,
+      "valorCuota": 171.48,
+      "interesPagado": 25.32,
+      "capitalPagado": 146.16,
+      "saldo": 1752.84
+    }
+    // ... continuando hasta la cuota 12
+  ]
 }
 ```
 
@@ -322,7 +332,7 @@ Content-Type: application/json
 }
 ```
 
-#### ❌ Crédito RECHAZADO - Jorge (no cumple requisitos)
+#### ✅ Crédito APROBADO - Jorge (cumple requisitos)
 ```json
 {
   "cedulaCliente": "1002410692",
@@ -330,7 +340,66 @@ Content-Type: application/json
   "formaPago": "CREDITO_DIRECTO",
   "detalles": [
     {
-      "idElectrodomestico": 1,
+      "idElectrodomestico": 4,
+      "cantidad": 1
+    }
+  ]
+}
+```
+**Respuesta Esperada:**
+```json
+{
+  "ventaExitosa": true,
+  "mensaje": "Venta procesada exitosamente",
+  "idFactura": 3,
+  "subtotal": 249.99,
+  "descuento": 0.00,
+  "total": 249.99,
+  "formaPago": "CREDITO_DIRECTO",
+  "estadoFactura": "APROBADA",
+  "detalles": [
+    {
+      "idElectrodomestico": 4,
+      "nombreElectrodomestico": "Microondas Panasonic 1.2 pies",
+      "cantidad": 1,
+      "precioUnitario": 249.99,
+      "subtotalLinea": 249.99
+    }
+  ]
+}
+```
+
+#### ❌ Crédito RECHAZADO - Patricia (tiene crédito ACTIVO)
+```json
+{
+  "cedulaCliente": "1000846822",
+  "nombreCliente": "Patricia Isabel Cevallos Benítez",
+  "formaPago": "CREDITO_DIRECTO",
+  "detalles": [
+    {
+      "idElectrodomestico": 2,
+      "cantidad": 1
+    }
+  ]
+}
+```
+**Respuesta Esperada:**
+```json
+{
+  "ventaExitosa": false,
+  "mensaje": "Crédito no aprobado por el banco Banquito"
+}
+```
+
+#### ❌ Crédito RECHAZADO - Carlos (tiene crédito PENDIENTE)
+```json
+{
+  "cedulaCliente": "1752244770",
+  "nombreCliente": "Carlos Alberto Moncayo Rivadeneira",
+  "formaPago": "CREDITO_DIRECTO",
+  "detalles": [
+    {
+      "idElectrodomestico": 3,
       "cantidad": 1
     }
   ]
@@ -398,12 +467,12 @@ curl -X POST http://localhost:8080/ws_comercializadora_gr08/api/ventas/procesar 
 
 ---
 
-## ✅ Resultados Esperados
+## ✅ Resultados Esperados (Actualizados)
 
-1. **María José (1050423282)**: ✅ Sujeto crédito, monto máximo ~$8,100
-2. **Carlos (1752244770)**: ✅ Sujeto crédito, monto máximo ~$4,050
+1. **María José (1050423282)**: ✅ Sujeto crédito, monto máximo ~$4,050
+2. **Carlos (1752244770)**: ❌ No sujeto crédito (tiene crédito PENDIENTE)
 3. **Ana Cristina (1752244887)**: ✅ Sujeto crédito, monto máximo ~$8,100
-4. **Jorge (1002410692)**: ❌ No sujeto crédito (edad < 25 si casado, sin depósitos)
+4. **Jorge (1002410692)**: ✅ Sujeto crédito, monto máximo ~$400
 5. **Patricia (1000846822)**: ❌ No sujeto crédito (crédito ACTIVO)
 
 **Ventas Efectivo**: 33% descuento automático  

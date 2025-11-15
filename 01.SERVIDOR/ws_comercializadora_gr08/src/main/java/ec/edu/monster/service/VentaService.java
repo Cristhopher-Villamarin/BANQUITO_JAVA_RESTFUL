@@ -110,7 +110,14 @@ public class VentaService {
             response.setDescuento(descuento);
             response.setTotal(total);
             response.setFormaPago(request.getFormaPago());
-            response.setEstadoFactura("APROBADA");
+            
+            // Establecer estado según forma de pago
+            if ("EFECTIVO".equalsIgnoreCase(request.getFormaPago())) {
+                response.setEstadoFactura("PAGADA");
+            } else if ("CREDITO_DIRECTO".equalsIgnoreCase(request.getFormaPago())) {
+                response.setEstadoFactura("APROBADA");
+            }
+            
             response.setDetalles(detallesResponse);
             
         } catch (SQLException e) {
@@ -207,14 +214,18 @@ public class VentaService {
     }
     
     private Integer crearFactura(Connection connection, VentaRequest request, BigDecimal subtotal, BigDecimal descuento, BigDecimal total) throws SQLException {
+        // Determinar estado según forma de pago
+        String estadoFactura = "EFECTIVO".equalsIgnoreCase(request.getFormaPago()) ? "PAGADA" : "APROBADA";
+        
         String sql = "INSERT INTO FACTURA (cedula, fecha, formaPago, subtotal, descuento, total, estado) " +
-                    "VALUES (?, CURDATE(), ?, ?, ?, ?, 'APROBADA')";
+                    "VALUES (?, CURDATE(), ?, ?, ?, ?, ?)";
         try (PreparedStatement stmt = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
             stmt.setString(1, request.getCedulaCliente());
             stmt.setString(2, request.getFormaPago());
             stmt.setBigDecimal(3, subtotal);
             stmt.setBigDecimal(4, descuento);
             stmt.setBigDecimal(5, total);
+            stmt.setString(6, estadoFactura);
             stmt.executeUpdate();
             
             ResultSet rs = stmt.getGeneratedKeys();
