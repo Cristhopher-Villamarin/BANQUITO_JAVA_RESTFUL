@@ -27,7 +27,7 @@ INSERT INTO CUENTA (numCuenta, cedula, saldo) VALUES
 
 -- =============================================
 -- MOVIMIENTOS (Últimos 3 meses: Agosto-Octubre 2025)
--- Total: 52 movimientos con DEP, RET y TRF
+-- Total: 52 movimientos con DEP y RET
 -- =============================================
 
 -- MARÍA JOSÉ ANDRADE (20156789) - Agosto 2025
@@ -37,7 +37,6 @@ INSERT INTO MOVIMIENTO (numCuenta, tipo, valor, fecha) VALUES
 ('20156789', 'DEP', 1800.00, '2025-08-20'),
 ('20156789', 'RET', 300.00, '2025-08-15'),
 ('20156789', 'RET', 450.00, '2025-08-25'),
-('20156789', 'TRF', 200.00, '2025-08-28');
 
 -- MARÍA JOSÉ ANDRADE - Septiembre 2025
 INSERT INTO MOVIMIENTO (numCuenta, tipo, valor, fecha) VALUES
@@ -46,7 +45,6 @@ INSERT INTO MOVIMIENTO (numCuenta, tipo, valor, fecha) VALUES
 ('20156789', 'DEP', 1900.00, '2025-09-28'),
 ('20156789', 'RET', 280.00, '2025-09-10'),
 ('20156789', 'RET', 380.00, '2025-09-22'),
-('20156789', 'TRF', 150.00, '2025-09-25');
 
 -- MARÍA JOSÉ ANDRADE - Octubre 2025
 INSERT INTO MOVIMIENTO (numCuenta, tipo, valor, fecha) VALUES
@@ -62,14 +60,12 @@ INSERT INTO MOVIMIENTO (numCuenta, tipo, valor, fecha) VALUES
 ('20234567', 'DEP', 1200.00, '2025-08-22'),
 ('20234567', 'RET', 200.00, '2025-08-18'),
 ('20234567', 'RET', 280.00, '2025-08-28'),
-('20234567', 'TRF', 100.00, '2025-08-30');
 
 -- CARLOS MONCAYO - Septiembre 2025
 INSERT INTO MOVIMIENTO (numCuenta, tipo, valor, fecha) VALUES
 ('20234567', 'DEP', 1100.00, '2025-09-05'),
 ('20234567', 'DEP', 1050.00, '2025-09-20'),
 ('20234567', 'RET', 250.00, '2025-09-12'),
-('20234567', 'TRF', 80.00, '2025-09-25');
 
 -- CARLOS MONCAYO - Octubre 2025
 INSERT INTO MOVIMIENTO (numCuenta, tipo, valor, fecha) VALUES
@@ -77,7 +73,6 @@ INSERT INTO MOVIMIENTO (numCuenta, tipo, valor, fecha) VALUES
 ('20234567', 'DEP', 1080.00, '2025-10-17'),
 ('20234567', 'DEP', 1120.00, '2025-10-30'),
 ('20234567', 'RET', 260.00, '2025-10-10'),
-('20234567', 'TRF', 120.00, '2025-10-22');
 
 -- ANA VALLEJO (20398765) - Agosto 2025
 INSERT INTO MOVIMIENTO (numCuenta, tipo, valor, fecha) VALUES
@@ -85,7 +80,6 @@ INSERT INTO MOVIMIENTO (numCuenta, tipo, valor, fecha) VALUES
 ('20398765', 'DEP', 3200.00, '2025-08-16'),
 ('20398765', 'RET', 450.00, '2025-08-12'),
 ('20398765', 'RET', 550.00, '2025-08-25'),
-('20398765', 'TRF', 300.00, '2025-08-28');
 
 -- ANA VALLEJO - Septiembre 2025
 INSERT INTO MOVIMIENTO (numCuenta, tipo, valor, fecha) VALUES
@@ -93,14 +87,12 @@ INSERT INTO MOVIMIENTO (numCuenta, tipo, valor, fecha) VALUES
 ('20398765', 'DEP', 2950.00, '2025-09-18'),
 ('20398765', 'RET', 480.00, '2025-09-10'),
 ('20398765', 'RET', 520.00, '2025-09-23'),
-('20398765', 'TRF', 250.00, '2025-09-27');
 
 -- ANA VALLEJO - Octubre 2025
 INSERT INTO MOVIMIENTO (numCuenta, tipo, valor, fecha) VALUES
 ('20398765', 'DEP', 3050.00, '2025-10-06'),
 ('20398765', 'DEP', 2980.00, '2025-10-19'),
 ('20398765', 'RET', 500.00, '2025-10-14'),
-('20398765', 'TRF', 200.00, '2025-10-29');
 
 -- JORGE SANTILLÁN (20412345) - Agosto 2025
 INSERT INTO MOVIMIENTO (numCuenta, tipo, valor, fecha) VALUES
@@ -113,14 +105,12 @@ INSERT INTO MOVIMIENTO (numCuenta, tipo, valor, fecha) VALUES
 ('20412345', 'DEP', 450.00, '2025-09-08'),
 ('20412345', 'DEP', 420.00, '2025-09-22'),
 ('20412345', 'RET', 180.00, '2025-09-15'),
-('20412345', 'TRF', 50.00, '2025-09-28');
 
 -- JORGE SANTILLÁN - Octubre 2025
 INSERT INTO MOVIMIENTO (numCuenta, tipo, valor, fecha) VALUES
 ('20412345', 'DEP', 480.00, '2025-10-07'),
 ('20412345', 'DEP', 460.00, '2025-10-21'),
 ('20412345', 'RET', 170.00, '2025-10-13'),
-('20412345', 'TRF', 60.00, '2025-10-27');
 
 -- PATRICIA CEVALLOS (20587654) - Agosto 2025
 INSERT INTO MOVIMIENTO (numCuenta, tipo, valor, fecha) VALUES
@@ -128,14 +118,12 @@ INSERT INTO MOVIMIENTO (numCuenta, tipo, valor, fecha) VALUES
 ('20587654', 'DEP', 850.00, '2025-08-18'),
 ('20587654', 'RET', 180.00, '2025-08-14'),
 ('20587654', 'RET', 220.00, '2025-08-26'),
-('20587654', 'TRF', 100.00, '2025-08-30');
 
 -- PATRICIA CEVALLOS - Septiembre 2025
 INSERT INTO MOVIMIENTO (numCuenta, tipo, valor, fecha) VALUES
 ('20587654', 'DEP', 800.00, '2025-09-07'),
 ('20587654', 'DEP', 780.00, '2025-09-21'),
 ('20587654', 'RET', 200.00, '2025-09-14'),
-('20587654', 'TRF', 90.00, '2025-09-28');
 
 -- PATRICIA CEVALLOS - Octubre 2025
 INSERT INTO MOVIMIENTO (numCuenta, tipo, valor, fecha) VALUES
@@ -143,7 +131,6 @@ INSERT INTO MOVIMIENTO (numCuenta, tipo, valor, fecha) VALUES
 ('20587654', 'DEP', 790.00, '2025-10-16'),
 ('20587654', 'DEP', 810.00, '2025-10-28'),
 ('20587654', 'RET', 210.00, '2025-10-11'),
-('20587654', 'TRF', 110.00, '2025-10-24');
 
 -- =============================================
 -- CRÉDITOS
@@ -156,10 +143,10 @@ INSERT INTO CREDITO (cedula, montoSolicitado, montoAprobado, plazoMeses, tasaAnu
 VALUES ('1000846822', 2000.00, 2000.00, 12, 16.00, 180.52, 'ACTIVO', '2025-09-01', '2025-09-05');
 
 INSERT INTO CREDITO (cedula, montoSolicitado, montoAprobado, plazoMeses, tasaAnual, cuotaFija, estado, fechaSolicitud, fechaAprobacion)
-VALUES ('1002410692', 5000.00, NULL, 12, 16.00, 0.00, 'RECHAZADO', '2025-10-15', '2025-10-16');
+VALUES ('1002410692', 5000.00, NULL, 12, 16.00, 0.00, 'CANCELADO', '2025-10-15', '2025-10-16');
 
 INSERT INTO CREDITO (cedula, montoSolicitado, montoAprobado, plazoMeses, tasaAnual, cuotaFija, estado, fechaSolicitud, fechaAprobacion)
-VALUES ('1752244770', 3000.00, NULL, 12, 16.00, 0.00, 'PENDIENTE', '2025-11-10', NULL);
+VALUES ('1752244770', 3000.00, NULL, 12, 16.00, 0.00, 'CANCELADO', '2025-11-10', NULL);
 
 -- =============================================
 -- AMORTIZACIÓN (Crédito ACTIVO de Patricia)

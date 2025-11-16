@@ -8,13 +8,11 @@ SELECT
     CASE 
         WHEN m.tipo = 'DEP' THEN 'DEPOSITO'
         WHEN m.tipo = 'RET' THEN 'RETIRO'
-        WHEN m.tipo = 'TRF' THEN 'TRANSFERENCIA'
         ELSE m.tipo
     END as categoria,
     CASE 
         WHEN m.tipo = 'DEP' THEN '+'
         WHEN m.tipo = 'RET' THEN '-'
-        WHEN m.tipo = 'TRF' THEN '~'
         ELSE '?'
     END as signo
 FROM MOVIMIENTO m 

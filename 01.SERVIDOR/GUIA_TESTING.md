@@ -6,7 +6,7 @@
 | Cédula | Nombre | Estado Civil | Edad | Perfil | Saldo Cuenta | Crédito Previo |
 |--------|--------|--------------|------|--------|--------------|----------------|
 | 1050423282 | María José Andrade | Casado (C) | 34 | ✅ Cliente con depósitos | $4,500 | Ninguno |
-| 1752244770 | Carlos Moncayo | Soltero (S) | 26 | ✅ Cliente con depósitos | $2,800 | PENDIENTE |
+| 1752244770 | Carlos Moncayo | Soltero (S) | 26 | ✅ Cliente con depósitos | $2,800 | CANCELADO |
 | 1752244887 | Ana Cristina Vallejo | Casado (C) | 37 | ✅ Cliente con depósitos | $8,500 | Ninguno |
 | 1002410692 | Jorge Luis Santillán | Soltero (S) | 24 | ✅ Cliente con depósitos | $800 | RECHAZADO |
 | 1000846822 | Patricia Cevallos | Divorciado (D) | 38 | ✅ Cliente con depósitos | $3,200 | ACTIVO |
@@ -239,18 +239,19 @@ GET http://localhost:8080/ws_banquito_gr08/api/creditos/cliente/9999999999/sujet
 ```
 *Nota: Este cliente no existe en la base de datos del banco.*
 
-#### ❌ Caso RECHAZADO - Carlos (Tiene crédito PENDIENTE)
+#### ❌ Caso RECHAZADO - Carlos (Tiene crédito CANCELADO)
 ```bash
 GET http://localhost:8080/ws_banquito_gr08/api/creditos/cliente/1752244770/sujeto-credito
 ```
 **Respuesta Esperada:**
 ```json
 {
-  "sujetoCredito": false,
-  "mensaje": "El cliente ya tiene un crédito activo"
+  "sujetoCredito": true,
+  "mensaje": "Cliente cumple requisitos para ser sujeto de crédito",
+  "montoMaximoCredito": 5600.00
 }
 ```
-*Nota: Carlos tiene un crédito con estado 'PENDIENTE' desde 2025-11-10.*
+*Nota: Carlos tiene un crédito con estado 'CANCELADO', por lo que puede solicitar un nuevo crédito.*
 
 #### ❌ Caso RECHAZADO - Patricia (Tiene crédito ACTIVO)
 ```bash
@@ -284,7 +285,7 @@ POST http://localhost:8080/ws_banquito_gr08/api/creditos/evaluar
 Content-Type: application/json
 ```
 
-#### ❌ Caso RECHAZADO - Carlos Moncayo (tiene crédito PENDIENTE)
+#### ❌ Caso RECHAZADO - Carlos Moncayo (tiene crédito CANCELADO - ahora puede solicitar)
 ```json
 {
   "cedula": "1752244770",
@@ -295,9 +296,12 @@ Content-Type: application/json
 **Respuesta Esperada:**
 ```json
 {
-  "sujetoCredito": false,
-  "creditoAprobado": false,
-  "mensaje": "El cliente ya tiene un crédito activo"
+  "sujetoCredito": true,
+  "creditoAprobado": true,
+  "montoMaximoCredito": 5600.00,
+  "mensaje": "Crédito aprobado",
+  "idCredito": 3,
+  "cuotaMensual": 81.27
 }
 ```
 
@@ -677,7 +681,7 @@ Content-Type: application/json
 }
 ```
 
-#### ❌ Crédito RECHAZADO - Carlos (tiene crédito PENDIENTE)
+#### ❌ Crédito RECHAZADO - Carlos (tiene crédito CANCELADO - ahora puede solicitar)
 ```json
 {
   "cedulaCliente": "1752244770",
@@ -694,8 +698,11 @@ Content-Type: application/json
 **Respuesta Esperada:**
 ```json
 {
-  "ventaExitosa": false,
-  "mensaje": "Crédito no aprobado por el banco Banquito"
+  "ventaExitosa": true,
+  "mensaje": "Venta procesada exitosamente",
+  "idVenta": 123,
+  "montoTotal": 599.00,
+  "formaPago": "CREDITO_DIRECTO"
 }
 ```
 
@@ -756,9 +763,9 @@ curl -X POST http://localhost:8080/ws_comercializadora_gr08/api/ventas/procesar 
 ## ✅ Resultados Esperados (Actualizados)
 
 1. **María José (1050423282)**: ✅ Sujeto crédito, monto máximo ~$4,050
-2. **Carlos (1752244770)**: ❌ No sujeto crédito (tiene crédito PENDIENTE)
+2. **Carlos (1752244770)**: ✅ Sujeto crédito (crédito anterior CANCELADO), monto máximo ~$5,600
 3. **Ana Cristina (1752244887)**: ✅ Sujeto crédito, monto máximo ~$8,100
-4. **Jorge (1002410692)**: ✅ Sujeto crédito, monto máximo ~$400
+4. **Jorge (1002410692)**: ✅ Sujeto crédito (crédito anterior CANCELADO), monto máximo ~$400
 5. **Patricia (1000846822)**: ❌ No sujeto crédito (crédito ACTIVO)
 
 **Ventas Efectivo**: 33% descuento automático  

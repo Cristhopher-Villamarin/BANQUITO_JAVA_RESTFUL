@@ -9,7 +9,6 @@ SELECT
     CASE 
         WHEN m.tipo = 'DEP' THEN 'DEPOSITO'
         WHEN m.tipo = 'RET' THEN 'RETIRO'
-        WHEN m.tipo = 'TRF' THEN 'TRANSFERENCIA'
         ELSE m.tipo
     END as categoria
 FROM MOVIMIENTO m 

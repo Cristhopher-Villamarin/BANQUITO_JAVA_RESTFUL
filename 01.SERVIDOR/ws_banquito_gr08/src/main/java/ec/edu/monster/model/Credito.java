@@ -47,7 +47,7 @@ public class Credito {
         this.montoSolicitado = montoSolicitado;
         this.plazoMeses = plazoMeses;
         this.tasaAnual = new BigDecimal("16.00");
-        this.estado = "PENDIENTE";
+        this.estado = "ACTIVO";
         this.fechaSolicitud = LocalDate.now();
     }
     
@@ -135,28 +135,10 @@ public class Credito {
         return "ACTIVO".equals(estado);
     }
     
-    public boolean estaPendiente() {
-        return "PENDIENTE".equals(estado);
-    }
-    
-    public boolean estaAprobado() {
-        return "APROBADO".equals(estado);
-    }
-    
-    public void aprovar(BigDecimal montoAprobado, BigDecimal cuotaFija) {
-        this.montoAprobado = montoAprobado;
-        this.cuotaFija = cuotaFija;
-        this.estado = "APROBADO";
-        this.fechaAprobacion = LocalDate.now();
-    }
-    
     public void activar() {
         this.estado = "ACTIVO";
     }
     
-    public void rechazar() {
-        this.estado = "RECHAZADO";
-    }
     
     @Override
     public String toString() {

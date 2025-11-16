@@ -170,7 +170,7 @@ public class CreditoService {
     }
     
     private boolean verificarCreditoActivo(Connection connection, String cedula) throws SQLException {
-        String sql = "SELECT COUNT(*) FROM CREDITO WHERE cedula = ? AND estado IN ('ACTIVO', 'PENDIENTE')";
+        String sql = "SELECT COUNT(*) FROM CREDITO WHERE cedula = ? AND estado = 'ACTIVO'";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, cedula);
             ResultSet rs = stmt.executeQuery();
