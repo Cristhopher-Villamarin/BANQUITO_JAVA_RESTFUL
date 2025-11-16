@@ -165,7 +165,7 @@ public class MonsterController {
             if (formaPago.equals("CREDITO_DIRECTO")) {
                 System.out.println();
                 ConsoleUI.mostrarMensajeInfo("PLAZO DEL CRÉDITO:");
-                System.out.println("  Opciones: 6, 12, 18, 24 meses");
+                System.out.println("  Opciones: 3 a 24 meses");
                 plazoMeses = ConsoleUI.leerEntero("Plazo en meses: ");
             }
             
