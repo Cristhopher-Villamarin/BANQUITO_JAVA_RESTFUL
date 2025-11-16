@@ -11,7 +11,6 @@ import ec.edu.monster.model.Cliente;
 import ec.edu.monster.model.Credito;
 import ec.edu.monster.model.Cuenta;
 import ec.edu.monster.model.Movimiento;
-import ec.edu.monster.utils.DatabaseConnection;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
