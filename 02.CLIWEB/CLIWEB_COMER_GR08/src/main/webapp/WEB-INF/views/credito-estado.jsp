@@ -6,75 +6,66 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Estado de crédito</title>
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/styles.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/credito-estado.css">
 </head>
-<body>
+<body class="credito-body">
 <%
     CreditoEvaluacionResponse evaluacion = (CreditoEvaluacionResponse) request.getAttribute("evaluacion");
     String cedula = (String) request.getAttribute("cedula");
     String error = (String) request.getAttribute("error");
 %>
-<div class="page">
-    <div class="card">
-        <div class="card__header">
-            <div>
-                <h1 class="title">Estado de crédito del cliente</h1>
-                <p class="subtitle">Consulta con Banquito</p>
-            </div>
-            <div class="user-badge">
-                <a href="${pageContext.request.contextPath}/user/menu" class="link link--muted">Volver al menú</a>
-            </div>
+<div class="credito-shell">
+    <header class="hero">
+        <div class="hero__content">
+            <p class="hero__eyebrow">Conexión Banquito</p>
+            <h1>Estado de crédito del cliente</h1>
+            <p>Consulta si el cliente puede acceder a crédito directo y visualiza el detalle en tarjetas.</p>
         </div>
+        <div class="hero__actions">
+            <a href="${pageContext.request.contextPath}/user/menu" class="ghost-btn">Volver al menú</a>
+        </div>
+    </header>
 
-        <% if (error != null) { %>
-            <div class="alert alert--error"><%= error %></div>
-        <% } %>
+    <% if (error != null) { %>
+        <div class="alert"><%= error %></div>
+    <% } %>
 
-        <form method="post" action="${pageContext.request.contextPath}/user/credito/estado" class="form">
-            <div class="form__group">
-                <label class="form__label" for="cedula">Cédula del cliente</label>
-                <input id="cedula" name="cedula" type="text" class="form__input" required value="<%= cedula != null ? cedula : "" %>">
-            </div>
-            <div class="form__actions">
-                <button type="submit" class="btn btn--primary">Consultar</button>
-            </div>
+    <section class="panel">
+        <form method="post" action="${pageContext.request.contextPath}/user/credito/estado" class="consulta-form">
+            <label class="field">
+                <span>Cédula del cliente</span>
+                <input id="cedula" name="cedula" type="text" required value="<%= cedula != null ? cedula : "" %>">
+            </label>
+            <button type="submit" class="primary-btn">Consultar</button>
         </form>
+    </section>
 
-        <% if (evaluacion != null) { %>
-            <section class="section">
-                <h2 class="section__title">Resultado</h2>
-                <p><strong>Cédula:</strong> <%= cedula %></p>
-                <p><strong>Sujeto de crédito:</strong>
-                    <% if (evaluacion.getSujetoCredito() != null && evaluacion.getSujetoCredito()) { %>
-                        Sí
-                    <% } else { %>
-                        No
-                    <% } %>
-                </p>
-                <% if (evaluacion.getMontoMaximoCredito() != null) { %>
-                    <p><strong>Monto máximo:</strong> $<%= evaluacion.getMontoMaximoCredito() %></p>
-                <% } %>
-                <% if (evaluacion.getCreditoAprobado() != null) { %>
-                    <p><strong>Crédito actual:</strong>
-                        <% if (evaluacion.getCreditoAprobado()) { %>
-                            Aprobado
-                        <% } else { %>
-                            Rechazado
-                        <% } %>
-                    </p>
-                <% } %>
-                <% if (evaluacion.getCuotaMensual() != null) { %>
-                    <p><strong>Cuota mensual estimada:</strong> $<%= evaluacion.getCuotaMensual() %></p>
-                <% } %>
-                <% if (evaluacion.getIdCredito() != null) { %>
-                    <p><strong>ID Crédito:</strong> <%= evaluacion.getIdCredito() %></p>
-                <% } %>
-                <% if (evaluacion.getMensaje() != null) { %>
-                    <p class="text-muted"><%= evaluacion.getMensaje() %></p>
-                <% } %>
+    <% if (evaluacion != null) { %>
+        <section class="results">
+            <article class="result-card">
+                <p class="result-card__label">Resultado</p>
+                <h2><%= evaluacion.getSujetoCredito() != null && evaluacion.getSujetoCredito() ? "Sujeto de crédito" : "No sujeto" %></h2>
+                <p class="result-card__value">Cédula: <strong><%= cedula %></strong></p>
+            </article>
+            <article class="result-card">
+                <p class="result-card__label">Monto máximo</p>
+                <h2><%= evaluacion.getMontoMaximoCredito() != null ? "$" + evaluacion.getMontoMaximoCredito() : "--" %></h2>
+                <p class="result-card__value">Cuota estimada: <strong><%= evaluacion.getCuotaMensual() != null ? "$" + evaluacion.getCuotaMensual() : "--" %></strong></p>
+            </article>
+            <article class="result-card">
+                <p class="result-card__label">Estado del crédito</p>
+                <h2><%= evaluacion.getCreditoAprobado() != null && evaluacion.getCreditoAprobado() ? "Aprobado" : "Rechazado" %></h2>
+                <p class="result-card__value">ID crédito: <strong><%= evaluacion.getIdCredito() != null ? evaluacion.getIdCredito() : "--" %></strong></p>
+            </article>
+        </section>
+
+        <% if (evaluacion.getMensaje() != null) { %>
+            <section class="panel panel--message">
+                <p class="panel__eyebrow">Mensaje</p>
+                <p><%= evaluacion.getMensaje() %></p>
             </section>
         <% } %>
-    </div>
+    <% } %>
 </div>
 </body>
 </html>

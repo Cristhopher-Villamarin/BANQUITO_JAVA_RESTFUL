@@ -7,27 +7,50 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Catálogo de electrodomésticos</title>
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/styles.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/catalogo.css">
 </head>
-<body>
+<body class="catalog-body">
 <%
     List<Electrodomestico> lista = (List<Electrodomestico>) request.getAttribute("electrodomesticos");
     String error = (String) request.getAttribute("error");
+    int totalProductos = lista != null ? lista.size() : 0;
 %>
-<div class="page">
-    <div class="card">
-        <div class="card__header">
-            <div>
-                <h1 class="title">Catálogo de electrodomésticos</h1>
-                <p class="subtitle">Comercializadora Monster</p>
+<div class="catalog-shell">
+    <header class="hero">
+        <div class="hero__content">
+            <p class="hero__badge">Comercializadora Monster</p>
+            <h1 class="hero__title">Catálogo activo de electrodomésticos</h1>
+            <p class="hero__subtitle">Actualiza tu cotización con precios reales y disponibilidad inmediata.</p>
+            <div class="hero__stats">
+                <article>
+                    <h2><%= totalProductos %></h2>
+                    <p>Productos vigentes</p>
+                </article>
+                <article>
+                    <h2>USD</h2>
+                    <p>Precios expresados en dólares americanos</p>
+                </article>
             </div>
-            <div class="user-badge">
-                <a href="${pageContext.request.contextPath}/user/menu" class="link link--muted">Volver al menú</a>
+        </div>
+        <div class="hero__actions">
+            <a href="${pageContext.request.contextPath}/user/menu" class="ghost-btn">Regresar al menú</a>
+            <p class="hero__note">Datos sincronizados con inventario central.</p>
+        </div>
+    </header>
+
+    <section class="panel">
+        <div class="panel__header">
+            <div>
+                <p class="panel__eyebrow">Tabla maestra</p>
+                <h2>Electrodomésticos disponibles</h2>
+            </div>
+            <div class="panel__tips">
+                <span>Filtra por ID al momento de registrar una venta</span>
             </div>
         </div>
 
         <% if (error != null) { %>
-            <div class="alert alert--error"><%= error %></div>
+            <div class="panel__alert"><%= error %></div>
         <% } %>
 
         <div class="table-wrapper">
@@ -56,7 +79,7 @@
                 </tbody>
             </table>
         </div>
-    </div>
+    </section>
 </div>
 </body>
 </html>

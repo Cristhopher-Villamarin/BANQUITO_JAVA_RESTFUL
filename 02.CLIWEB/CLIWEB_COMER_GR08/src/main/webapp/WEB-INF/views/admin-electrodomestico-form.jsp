@@ -6,39 +6,48 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Electrodoméstico - Formulario</title>
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/styles.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/admin-electrodomestico-form.css">
 </head>
-<body>
+<body class="form-body">
 <%
     Electrodomestico e = (Electrodomestico) request.getAttribute("electrodomestico");
     boolean esEdicion = e != null && e.getIdElectrodomestico() != null;
 %>
-<div class="page">
-    <div class="card card--narrow">
-        <h1 class="title"><%= esEdicion ? "Editar electrodoméstico" : "Nuevo electrodoméstico" %></h1>
+<div class="form-shell">
+    <header class="hero">
+        <div>
+            <p class="hero__eyebrow">Catálogo maestro</p>
+            <h1><%= esEdicion ? "Editar electrodoméstico" : "Nuevo electrodoméstico" %></h1>
+            <p>Mantén actualizada la lista de referencias con precios oficiales.</p>
+        </div>
+        <div class="hero__actions">
+            <a href="${pageContext.request.contextPath}/admin/electrodomesticos" class="ghost-btn">Volver al listado</a>
+        </div>
+    </header>
 
-        <form method="post" action="${pageContext.request.contextPath}/admin/electrodomesticos" class="form">
+    <section class="panel">
+        <form method="post" action="${pageContext.request.contextPath}/admin/electrodomesticos" class="edit-form">
             <input type="hidden" name="action" value="<%= esEdicion ? "actualizar" : "crear" %>">
             <% if (esEdicion) { %>
                 <input type="hidden" name="id" value="<%= e.getIdElectrodomestico() %>">
             <% } %>
 
-            <div class="form__group">
-                <label class="form__label" for="nombre">Nombre</label>
-                <input id="nombre" name="nombre" type="text" class="form__input" required value="<%= esEdicion ? e.getNombre() : "" %>">
-            </div>
+            <label class="field">
+                <span>Nombre</span>
+                <input id="nombre" name="nombre" type="text" required value="<%= esEdicion ? e.getNombre() : "" %>">
+            </label>
 
-            <div class="form__group">
-                <label class="form__label" for="precio">Precio de venta</label>
-                <input id="precio" name="precio" type="number" step="0.01" min="0" class="form__input" required value="<%= esEdicion && e.getPrecioVenta() != null ? e.getPrecioVenta() : "" %>">
-            </div>
+            <label class="field">
+                <span>Precio de venta (USD)</span>
+                <input id="precio" name="precio" type="number" step="0.01" min="0" required value="<%= esEdicion && e.getPrecioVenta() != null ? e.getPrecioVenta() : "" %>">
+            </label>
 
-            <div class="form__actions">
-                <a href="${pageContext.request.contextPath}/admin/electrodomesticos" class="btn btn--ghost">Cancelar</a>
-                <button type="submit" class="btn btn--primary">Guardar</button>
+            <div class="form-actions">
+                <a href="${pageContext.request.contextPath}/admin/electrodomesticos" class="ghost-btn">Cancelar</a>
+                <button type="submit" class="primary-btn">Guardar</button>
             </div>
         </form>
-    </div>
+    </section>
 </div>
 </body>
 </html>

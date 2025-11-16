@@ -8,95 +8,99 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Venta confirmada</title>
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/styles.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/venta-confirmacion.css">
 </head>
-<body>
+<body class="confirm-body">
 <%
     VentaResponse venta = (VentaResponse) request.getAttribute("venta");
     String cedula = (String) request.getAttribute("cedula");
     String nombre = (String) request.getAttribute("nombre");
 %>
-<div class="page">
-    <div class="card">
-        <div class="card__header">
-            <div>
-                <h1 class="title">Venta procesada</h1>
-                <p class="subtitle">Factura #<%= venta != null ? venta.getIdFactura() : "" %></p>
-            </div>
-            <div class="user-badge">
-                <a href="${pageContext.request.contextPath}/user/menu" class="link link--muted">Volver al menú</a>
-            </div>
+<div class="confirm-shell">
+    <header class="hero">
+        <div>
+            <p class="hero__eyebrow">Resultado del flujo</p>
+            <h1>Venta procesada</h1>
+            <p>Factura #<%= venta != null ? venta.getIdFactura() : "" %> · Estado: <%= venta != null ? venta.getEstadoFactura() : "--" %></p>
         </div>
+        <div class="hero__actions">
+            <a href="${pageContext.request.contextPath}/user/menu" class="ghost-btn">Volver al menú</a>
+        </div>
+    </header>
 
-        <% if (venta != null && venta.isVentaExitosa()) { %>
-            <section class="section">
-                <h2 class="section__title">Datos del cliente</h2>
-                <p><strong>Cliente:</strong> <%= nombre %> (<%= cedula %>)</p>
-                <p><strong>Forma de pago:</strong> <%= venta.getFormaPago() %></p>
-                <p><strong>Estado:</strong> <%= venta.getEstadoFactura() %></p>
-            </section>
+    <% if (venta != null && venta.isVentaExitosa()) { %>
+        <section class="panel panel--grid">
+            <article class="card">
+                <h2>Datos del cliente</h2>
+                <ul>
+                    <li><span>Cliente</span><strong><%= nombre %></strong></li>
+                    <li><span>Cédula</span><strong><%= cedula %></strong></li>
+                    <li><span>Forma de pago</span><strong><%= venta.getFormaPago() %></strong></li>
+                </ul>
+            </article>
+            <article class="card">
+                <h2>Resumen de la factura</h2>
+                <div class="totals">
+                    <div><span>Subtotal</span><strong>$<%= venta.getSubtotal() %></strong></div>
+                    <div><span>Descuento</span><strong>$<%= venta.getDescuento() %></strong></div>
+                    <div class="totals__highlight"><span>Total</span><strong>$<%= venta.getTotal() %></strong></div>
+                </div>
+            </article>
+        </section>
 
-            <section class="section">
-                <h2 class="section__title">Detalle de productos</h2>
-                <div class="table-wrapper">
-                    <table class="table">
-                        <thead>
-                        <tr>
-                            <th>Producto</th>
-                            <th>Cantidad</th>
-                            <th>Precio unitario</th>
-                            <th>Subtotal</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <% List<DetalleVentaResponse> detalles = venta.getDetalles(); %>
-                        <% if (detalles != null && !detalles.isEmpty()) { %>
-                            <% for (DetalleVentaResponse d : detalles) { %>
-                                <tr>
-                                    <td><%= d.getNombreElectrodomestico() %></td>
-                                    <td><%= d.getCantidad() %></td>
-                                    <td>$<%= d.getPrecioUnitario() %></td>
-                                    <td>$<%= d.getSubtotalLinea() %></td>
-                                </tr>
-                            <% } %>
-                        <% } else { %>
+        <section class="panel">
+            <header class="panel__header">
+                <div>
+                    <p class="panel__eyebrow">Productos</p>
+                    <h2>Detalle de la venta</h2>
+                </div>
+                <a href="${pageContext.request.contextPath}/user/venta" class="ghost-btn">Registrar otra</a>
+            </header>
+            <div class="table-wrapper">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>Producto</th>
+                        <th>Cantidad</th>
+                        <th>Precio unitario</th>
+                        <th>Subtotal</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <% List<DetalleVentaResponse> detalles = venta.getDetalles(); %>
+                    <% if (detalles != null && !detalles.isEmpty()) { %>
+                        <% for (DetalleVentaResponse d : detalles) { %>
                             <tr>
-                                <td colspan="4" class="table__empty">Sin detalles.</td>
+                                <td><%= d.getNombreElectrodomestico() %></td>
+                                <td><%= d.getCantidad() %></td>
+                                <td>$<%= d.getPrecioUnitario() %></td>
+                                <td>$<%= d.getSubtotalLinea() %></td>
                             </tr>
                         <% } %>
-                        </tbody>
-                    </table>
-                </div>
-            </section>
-
-            <section class="section section--totals">
-                <div class="totals">
-                    <div class="totals__row">
-                        <span>Subtotal</span>
-                        <span>$<%= venta.getSubtotal() %></span>
-                    </div>
-                    <div class="totals__row">
-                        <span>Descuento</span>
-                        <span>$<%= venta.getDescuento() %></span>
-                    </div>
-                    <div class="totals__row totals__row--highlight">
-                        <span>Total</span>
-                        <span>$<%= venta.getTotal() %></span>
-                    </div>
-                </div>
-            </section>
-        <% } else { %>
-            <div class="alert alert--error">
-                <strong>Venta rechazada.</strong>
-                <p><%= venta != null && venta.getMensaje() != null ? venta.getMensaje() : "No se pudo procesar la venta." %></p>
+                    <% } else { %>
+                        <tr>
+                            <td colspan="4" class="table__empty">Sin detalles.</td>
+                        </tr>
+                    <% } %>
+                    </tbody>
+                </table>
             </div>
-        <% } %>
+        </section>
+    <% } else { %>
+        <section class="panel panel--error">
+            <h2>Venta rechazada</h2>
+            <p><%= venta != null && venta.getMensaje() != null ? venta.getMensaje() : "No se pudo procesar la venta." %></p>
+            <div class="panel__actions">
+                <a href="${pageContext.request.contextPath}/user/venta" class="primary-btn">Intentar nuevamente</a>
+                <a href="${pageContext.request.contextPath}/user/menu" class="ghost-btn">Volver al menú</a>
+            </div>
+        </section>
+    <% } %>
 
-        <div class="form__actions form__actions--full">
-            <a href="${pageContext.request.contextPath}/user/venta" class="btn btn--ghost">Registrar otra venta</a>
-            <a href="${pageContext.request.contextPath}/user/menu" class="btn btn--primary">Volver al menú</a>
-        </div>
-    </div>
+    <footer class="actions">
+        <a href="${pageContext.request.contextPath}/user/venta" class="ghost-btn">Registrar otra venta</a>
+        <a href="${pageContext.request.contextPath}/user/menu" class="primary-btn">Ir al menú</a>
+    </footer>
 </div>
 </body>
 </html>
