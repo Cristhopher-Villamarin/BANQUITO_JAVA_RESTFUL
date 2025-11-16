@@ -1,5 +1,0 @@
--- =============================================
--- ARCHIVO OBSOLETO - YA NO SE USA
--- =============================================
--- Las transferencias han sido eliminadas del sistema.
--- Solo se permiten depósitos (DEP) y retiros (RET).
