@@ -65,7 +65,7 @@ public class VentaService {
             
             // Verificar crédito directo si aplica
             if ("CREDITO_DIRECTO".equalsIgnoreCase(request.getFormaPago())) {
-                boolean creditoAprobado = verificarCreditoBanquito(request.getCedulaCliente(), total);
+                boolean creditoAprobado = verificarCreditoBanquito(request.getCedulaCliente(), total, request.getPlazoMeses());
                 if (!creditoAprobado) {
                     connection.rollback();
                     response.setVentaExitosa(false);
@@ -145,7 +145,7 @@ public class VentaService {
         return null;
     }
     
-    private boolean verificarCreditoBanquito(String cedula, BigDecimal monto) {
+    private boolean verificarCreditoBanquito(String cedula, BigDecimal monto, Integer plazoMeses) {
         try {
             // Llamar al servicio del banco Banquito
             java.net.URL url = new java.net.URL(BANQUITO_API_URL + "/creditos/evaluar");
@@ -156,8 +156,8 @@ public class VentaService {
             
             // Construir JSON request
             String jsonInputString = String.format(
-                "{\"cedula\":\"%s\",\"montoElectrodomestico\":%s,\"plazoMeses\":12}",
-                cedula, monto.toString().replace(',', '.')
+                "{\"cedula\":\"%s\",\"montoElectrodomestico\":%s,\"plazoMeses\":%d}",
+                cedula, monto.toString().replace(',', '.'), plazoMeses != null ? plazoMeses : 12
             );
             
             LOGGER.log(Level.INFO, "Enviando solicitud a Banquito: {0}", jsonInputString);

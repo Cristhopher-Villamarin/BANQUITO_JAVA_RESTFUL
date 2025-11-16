@@ -2,6 +2,7 @@ package ec.edu.monster.controller;
 
 import ec.edu.monster.dto.AmortizacionDTO;
 import ec.edu.monster.dto.CuotaAmortizacionResponse;
+import ec.edu.monster.dto.CreditoResponse;
 import ec.edu.monster.dto.EvaluacionCreditoRequest;
 import ec.edu.monster.dto.EvaluacionCreditoResponse;
 import ec.edu.monster.dto.TablaAmortizacionResponse;
@@ -48,6 +49,22 @@ public class CreditoController {
             
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Error en evaluación de crédito", e);
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity("{\"mensaje\":\"Error interno del servidor\"}")
+                    .build();
+        }
+    }
+    
+    @GET
+    @Path("/cliente/{cedula}/creditos-activos")
+    public Response obtenerCreditosActivos(@PathParam("cedula") String cedula) {
+        try {
+            List<CreditoResponse> creditos = creditoService.obtenerCreditosActivosPorCliente(cedula);
+            
+            return Response.ok(creditos).build();
+            
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Error obteniendo créditos activos del cliente", e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                     .entity("{\"mensaje\":\"Error interno del servidor\"}")
                     .build();

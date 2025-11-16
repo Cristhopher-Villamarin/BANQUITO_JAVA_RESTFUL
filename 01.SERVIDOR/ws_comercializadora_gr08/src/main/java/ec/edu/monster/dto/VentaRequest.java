@@ -7,6 +7,7 @@ public class VentaRequest {
     private String cedulaCliente;
     private String nombreCliente;
     private String formaPago;
+    private Integer plazoMeses;
     private List<DetalleVentaRequest> detalles;
     
     public VentaRequest() {}
@@ -33,6 +34,14 @@ public class VentaRequest {
     
     public void setFormaPago(String formaPago) {
         this.formaPago = formaPago;
+    }
+    
+    public Integer getPlazoMeses() {
+        return plazoMeses;
+    }
+    
+    public void setPlazoMeses(Integer plazoMeses) {
+        this.plazoMeses = plazoMeses;
     }
     
     public List<DetalleVentaRequest> getDetalles() {

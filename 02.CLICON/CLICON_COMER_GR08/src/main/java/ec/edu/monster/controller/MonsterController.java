@@ -112,8 +112,7 @@ public class MonsterController {
             ConsoleUI.mostrarMensajeInfo("Consultando datos del cliente...");
             String nombre = "";
             try {
-                CreditoEvaluacionRequest consultaCliente = new CreditoEvaluacionRequest(cedula, BigDecimal.ONE, 12);
-                CreditoEvaluacionResponse datosCliente = banquitoService.evaluarCredito(consultaCliente);
+                CreditoEvaluacionResponse datosCliente = banquitoService.verificarSujetoCredito(cedula);
                 if (datosCliente != null && datosCliente.getSujetoCredito() != null) {
                     // El nombre viene en el response del Banquito (aunque no lo mostramos aquí)
                     nombre = ConsoleUI.leerLinea("Nombre completo: ");
@@ -195,7 +194,13 @@ public class MonsterController {
             System.out.println();
             ConsoleUI.mostrarMensajeInfo("Procesando venta...");
             
-            VentaRequest ventaRequest = new VentaRequest(cedula, nombre, formaPago, detalles);
+            VentaRequest ventaRequest = new VentaRequest();
+            ventaRequest.setCedulaCliente(cedula);
+            ventaRequest.setNombreCliente(nombre);
+            ventaRequest.setFormaPago(formaPago);
+            ventaRequest.setPlazoMeses(plazoMeses);
+            ventaRequest.setDetalles(detalles);
+            
             VentaResponse response = ventaService.procesarVenta(ventaRequest);
             
             System.out.println();
@@ -269,9 +274,8 @@ public class MonsterController {
             System.out.println();
             ConsoleUI.mostrarMensajeInfo("Consultando con Banquito...");
             
-            // Consultar con monto mínimo para obtener estado del cliente
-            CreditoEvaluacionRequest request = new CreditoEvaluacionRequest(cedula, BigDecimal.ONE, 12);
-            CreditoEvaluacionResponse response = banquitoService.evaluarCredito(request);
+            // Consultar si el cliente es sujeto de crédito sin crear un crédito
+            CreditoEvaluacionResponse response = banquitoService.verificarSujetoCredito(cedula);
             
             System.out.println();
             ConsoleUI.mostrarLinea();
@@ -322,75 +326,106 @@ public class MonsterController {
     private void verTablaAmortizacion() {
         try {
             ConsoleUI.limpiarPantalla();
-            ConsoleUI.mostrarEncabezado("TABLA DE AMORTIZACIÓN");
+            ConsoleUI.mostrarEncabezado("CONSULTAR TABLA DE AMORTIZACIÓN");
             System.out.println();
             
             String cedula = ConsoleUI.leerLinea("Cédula del cliente: ");
-            String montoStr = ConsoleUI.leerLinea("Monto del electrodoméstico: $");
-            BigDecimal monto = new BigDecimal(montoStr);
-            int plazoMeses = ConsoleUI.leerEntero("Plazo en meses (6, 12, 18, 24): ");
             
             System.out.println();
-            ConsoleUI.mostrarMensajeInfo("Consultando con Banquito...");
+            ConsoleUI.mostrarMensajeInfo("Consultando créditos del cliente...");
             
-            CreditoEvaluacionRequest request = new CreditoEvaluacionRequest(cedula, monto, plazoMeses);
-            CreditoEvaluacionResponse response = banquitoService.evaluarCredito(request);
+            List<Credito> creditosActivos = (List<Credito>) banquitoService.obtenerCreditosActivos(cedula);
             
             System.out.println();
             
-            if (response.getCreditoAprobado() != null && response.getCreditoAprobado()) {
-                ConsoleUI.mostrarMensajeExito("¡CRÉDITO APROBADO!");
+            if (creditosActivos.isEmpty()) {
+                ConsoleUI.mostrarMensajeAdvertencia("El cliente no tiene créditos activos");
+                ConsoleUI.pausa();
+                return;
+            }
+            
+            // Mostrar lista de créditos activos
+            ConsoleUI.mostrarLinea();
+            System.out.println("  " + ConsoleUI.BOLD + ConsoleUI.CYAN + "CRÉDITOS ACTIVOS DEL CLIENTE" + ConsoleUI.RESET);
+            ConsoleUI.mostrarLinea();
+            System.out.println();
+            
+            for (int i = 0; i < creditosActivos.size(); i++) {
+                Credito credito = creditosActivos.get(i);
+                System.out.println("  " + ConsoleUI.BOLD + (i + 1) + "." + ConsoleUI.RESET + " ID Crédito: " + credito.getIdCredito());
+                System.out.println("     Monto: $" + credito.getMontoAprobado());
+                System.out.println("     Plazo: " + credito.getPlazoMeses() + " meses");
+                System.out.println("     Cuota: $" + credito.getCuotaFija());
+                System.out.println("     Fecha aprobación: " + credito.getFechaAprobacion());
+                System.out.println();
+            }
+            
+            ConsoleUI.mostrarLinea();
+            
+            int seleccion = ConsoleUI.leerEntero("Seleccione el número de crédito para ver su tabla de amortización (0 para cancelar): ");
+            
+            if (seleccion == 0 || seleccion < 1 || seleccion > creditosActivos.size()) {
+                ConsoleUI.mostrarMensajeInfo("Operación cancelada.");
+                ConsoleUI.pausa();
+                return;
+            }
+            
+            Credito creditoSeleccionado = creditosActivos.get(seleccion - 1);
+            
+            System.out.println();
+            ConsoleUI.mostrarMensajeInfo("Obteniendo tabla de amortización...");
+            
+            // Obtener tabla de amortización del crédito seleccionado
+            TablaAmortizacion tabla = banquitoService.obtenerTablaAmortizacion(creditoSeleccionado.getIdCredito());
+            
+            System.out.println();
+            
+            if (tabla != null && tabla.getCuotas() != null && !tabla.getCuotas().isEmpty()) {
+                ConsoleUI.mostrarMensajeExito("¡TABLA DE AMORTIZACIÓN ENCONTRADA!");
                 System.out.println();
                 ConsoleUI.mostrarLinea();
-                System.out.println("  " + ConsoleUI.BOLD + ConsoleUI.CYAN + "PLAN DE CRÉDITO" + ConsoleUI.RESET);
+                System.out.println("  " + ConsoleUI.BOLD + ConsoleUI.CYAN + "DETALLES DEL CRÉDITO" + ConsoleUI.RESET);
                 ConsoleUI.mostrarLinea();
                 System.out.println();
+                System.out.println("  ID Crédito: " + creditoSeleccionado.getIdCredito());
                 System.out.println("  Cédula: " + cedula);
-                System.out.println("  Monto financiado: " + ConsoleUI.GREEN + "$" + monto + ConsoleUI.RESET);
-                System.out.println("  Plazo: " + plazoMeses + " meses");
-                System.out.println("  Cuota mensual: " + ConsoleUI.BOLD + "$" + response.getCuotaMensual() + ConsoleUI.RESET);
-                if (response.getIdCredito() != null) {
-                    System.out.println("  ID Crédito: " + response.getIdCredito());
-                }
+                System.out.println("  Monto financiado: " + ConsoleUI.GREEN + "$" + creditoSeleccionado.getMontoAprobado() + ConsoleUI.RESET);
+                System.out.println("  Plazo: " + creditoSeleccionado.getPlazoMeses() + " meses");
+                System.out.println("  Cuota mensual: " + ConsoleUI.BOLD + "$" + creditoSeleccionado.getCuotaFija() + ConsoleUI.RESET);
                 System.out.println();
                 
-                if (response.getTablaAmortizacion() != null && !response.getTablaAmortizacion().isEmpty()) {
-                    ConsoleUI.mostrarLinea();
-                    System.out.println("  " + ConsoleUI.BOLD + "TABLA DE AMORTIZACIÓN" + ConsoleUI.RESET);
-                    ConsoleUI.mostrarLinea();
-                    System.out.println();
-                    
-                    // Encabezado de la tabla
-                    System.out.printf("  %-6s %-13s %-13s %-13s %-13s%n",
-                        "Cuota", "Capital", "Interés", "Valor Cuota", "Saldo");
-                    ConsoleUI.mostrarLinea();
-                    
-                    // Mostrar cada cuota
-                    for (CuotaAmortizacion cuota : response.getTablaAmortizacion()) {
-                        System.out.printf("  %-6d $%-12.2f $%-12.2f $%-12.2f $%-12.2f%n",
-                            cuota.getNumeroCuota(),
-                            cuota.getCapital(),
-                            cuota.getInteres(),
-                            cuota.getCuota(),
-                            cuota.getSaldoFinal()
-                        );
-                    }
-                    
-                    ConsoleUI.mostrarLinea();
-                    System.out.println();
-                    
-                    BigDecimal totalPagar = response.getCuotaMensual().multiply(new BigDecimal(plazoMeses));
-                    BigDecimal totalIntereses = totalPagar.subtract(monto);
-                    
-                    System.out.println("  " + ConsoleUI.CYAN + "Total a pagar: $" + totalPagar + ConsoleUI.RESET);
-                    System.out.println("  " + ConsoleUI.YELLOW + "Total intereses: $" + totalIntereses + ConsoleUI.RESET);
+                ConsoleUI.mostrarLinea();
+                System.out.println("  " + ConsoleUI.BOLD + "TABLA DE AMORTIZACIÓN" + ConsoleUI.RESET);
+                ConsoleUI.mostrarLinea();
+                System.out.println();
+                
+                // Encabezado de la tabla
+                System.out.printf("  %-6s %-13s %-13s %-13s %-13s%n",
+                    "Cuota", "Capital", "Interés", "Valor Cuota", "Saldo");
+                ConsoleUI.mostrarLinea();
+                
+                // Mostrar cada cuota
+                for (CuotaAmortizacion cuota : tabla.getCuotas()) {
+                    System.out.printf("  %-6d $%-12.2f $%-12.2f $%-12.2f $%-12.2f%n",
+                        cuota.getNumeroCuota(),
+                        cuota.getCapital(),
+                        cuota.getInteres(),
+                        cuota.getCuota(),
+                        cuota.getSaldoFinal()
+                    );
                 }
                 
+                ConsoleUI.mostrarLinea();
+                System.out.println();
+                
+                BigDecimal totalPagar = creditoSeleccionado.getCuotaFija().multiply(new BigDecimal(creditoSeleccionado.getPlazoMeses()));
+                BigDecimal totalIntereses = totalPagar.subtract(creditoSeleccionado.getMontoAprobado());
+                
+                System.out.println("  " + ConsoleUI.CYAN + "Total a pagar: $" + totalPagar + ConsoleUI.RESET);
+                System.out.println("  " + ConsoleUI.YELLOW + "Total intereses: $" + totalIntereses + ConsoleUI.RESET);
                 ConsoleUI.mostrarLinea();
             } else {
-                ConsoleUI.mostrarMensajeError("CRÉDITO RECHAZADO");
-                System.out.println();
-                ConsoleUI.mostrarMensajeAdvertencia("Motivo: " + response.getMensaje());
+                ConsoleUI.mostrarMensajeError("No se encontró tabla de amortización para el crédito seleccionado");
             }
             
             ConsoleUI.pausa();
@@ -401,7 +436,7 @@ public class MonsterController {
             ConsoleUI.pausa();
         } catch (Exception e) {
             System.out.println();
-            ConsoleUI.mostrarMensajeError("Error al consultar tabla: " + e.getMessage());
+            ConsoleUI.mostrarMensajeError("Error al consultar tabla de amortización: " + e.getMessage());
             ConsoleUI.pausa();
         }
     }

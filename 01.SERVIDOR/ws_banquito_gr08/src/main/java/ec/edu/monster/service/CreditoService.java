@@ -2,6 +2,7 @@ package ec.edu.monster.service;
 
 import ec.edu.monster.db.DatabaseConnection;
 import ec.edu.monster.dto.AmortizacionDTO;
+import ec.edu.monster.dto.CreditoResponse;
 import ec.edu.monster.dto.CuotaAmortizacionResponse;
 import ec.edu.monster.dto.EvaluacionCreditoRequest;
 import ec.edu.monster.dto.EvaluacionCreditoResponse;
@@ -32,8 +33,43 @@ public class CreditoService {
     private static final BigDecimal TASA_ANUAL = new BigDecimal("16.00");
     private static final BigDecimal TASA_MENSUAL = TASA_ANUAL.divide(new BigDecimal("12"), 6, RoundingMode.HALF_UP);
     
+    public List<CreditoResponse> obtenerCreditosActivosPorCliente(String cedula) throws SQLException {
+        List<CreditoResponse> creditos = new ArrayList<>();
+        
+        try (Connection connection = DatabaseConnection.getConnection()) {
+            String sql = "SELECT idCredito, cedula, montoSolicitado, montoAprobado, plazoMeses, tasaAnual, cuotaFija, estado, fechaSolicitud, fechaAprobacion " +
+                        "FROM CREDITO WHERE cedula = ? AND estado = 'ACTIVO' ORDER BY fechaAprobacion DESC";
+            
+            try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+                stmt.setString(1, cedula.trim());
+                ResultSet rs = stmt.executeQuery();
+                
+                while (rs.next()) {
+                    CreditoResponse credito = new CreditoResponse();
+                    credito.setIdCredito(rs.getInt("idCredito"));
+                    credito.setCedula(rs.getString("cedula"));
+                    credito.setMontoSolicitado(rs.getBigDecimal("montoSolicitado"));
+                    credito.setMontoAprobado(rs.getBigDecimal("montoAprobado"));
+                    credito.setPlazoMeses(rs.getInt("plazoMeses"));
+                    credito.setTasaAnual(rs.getBigDecimal("tasaAnual"));
+                    credito.setCuotaFija(rs.getBigDecimal("cuotaFija"));
+                    credito.setEstado(rs.getString("estado"));
+                    credito.setFechaSolicitud(rs.getDate("fechaSolicitud") != null ? 
+                        rs.getDate("fechaSolicitud").toString() : null);
+                    credito.setFechaAprobacion(rs.getDate("fechaAprobacion") != null ? 
+                        rs.getDate("fechaAprobacion").toString() : null);
+                    
+                    creditos.add(credito);
+                }
+            }
+        }
+        
+        return creditos;
+    }
+    
     public EvaluacionCreditoResponse verificarSujetoCredito(String cedula) {
         EvaluacionCreditoResponse response = new EvaluacionCreditoResponse();
+        response.setCreditoAprobado(null); // No aplica para verificación de sujeto de crédito
         
         try (Connection connection = DatabaseConnection.getConnection()) {
             
@@ -134,14 +170,24 @@ public class CreditoService {
                 BigDecimal cuotaMensual = calcularCuotaFija(request.getMontoElectrodomestico(), request.getPlazoMeses());
                 response.setCuotaMensual(cuotaMensual);
                 
-                Integer idCredito = crearCredito(connection, request.getCedula(), request.getMontoElectrodomestico(), request.getPlazoMeses(), cuotaMensual);
-                response.setIdCredito(idCredito);
-                
-                List<AmortizacionDTO> tablaAmortizacion = generarTablaAmortizacion(idCredito, request.getMontoElectrodomestico(), request.getPlazoMeses(), cuotaMensual);
-                response.setTablaAmortizacion(tablaAmortizacion);
-                
-                // Guardar tabla de amortización
-                guardarTablaAmortizacion(connection, idCredito, tablaAmortizacion);
+                try {
+                    Integer idCredito = crearCredito(connection, request.getCedula(), request.getMontoElectrodomestico(), request.getPlazoMeses(), cuotaMensual);
+                    response.setIdCredito(idCredito);
+                    
+                    List<AmortizacionDTO> tablaAmortizacion = generarTablaAmortizacion(idCredito, request.getMontoElectrodomestico(), request.getPlazoMeses(), cuotaMensual);
+                    response.setTablaAmortizacion(tablaAmortizacion);
+                    
+                    // Guardar tabla de amortización
+                    guardarTablaAmortizacion(connection, idCredito, tablaAmortizacion);
+                    
+                } catch (SQLException creditError) {
+                    LOGGER.log(Level.SEVERE, "Error al crear crédito para cédula: " + request.getCedula(), creditError);
+                    response.setCreditoAprobado(false);
+                    response.setMensaje("Error al crear el crédito: " + creditError.getMessage());
+                    response.setIdCredito(null);
+                    response.setCuotaMensual(null);
+                    response.setTablaAmortizacion(null);
+                }
                 
             } else {
                 response.setCreditoAprobado(false);
@@ -150,7 +196,9 @@ public class CreditoService {
             
         } catch (SQLException e) {
             LOGGER.log(Level.SEVERE, "Error en evaluación de crédito", e);
-            response.setMensaje("Error en el proceso de evaluación");
+            response.setSujetoCredito(false);
+            response.setCreditoAprobado(false);
+            response.setMensaje("Error en el proceso de evaluación: " + e.getMessage());
         }
         
         return response;
@@ -266,10 +314,24 @@ public class CreditoService {
     }
     
     private Integer crearCredito(Connection connection, String cedula, BigDecimal monto, Integer plazo, BigDecimal cuota) throws SQLException {
+        // Validaciones adicionales
+        if (cedula == null || cedula.trim().isEmpty()) {
+            throw new SQLException("La cédula no puede ser nula o vacía");
+        }
+        if (monto == null || monto.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new SQLException("El monto debe ser mayor que cero");
+        }
+        if (plazo == null || plazo <= 0) {
+            throw new SQLException("El plazo debe ser mayor que cero");
+        }
+        if (cuota == null || cuota.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new SQLException("La cuota debe ser mayor que cero");
+        }
+        
         String sql = "INSERT INTO CREDITO (cedula, montoSolicitado, montoAprobado, plazoMeses, tasaAnual, cuotaFija, estado, fechaSolicitud, fechaAprobacion) " +
-                    "VALUES (?, ?, ?, ?, ?, ?, 'APROBADO', CURDATE(), CURDATE())";
+                    "VALUES (?, ?, ?, ?, ?, ?, 'ACTIVO', CURDATE(), CURDATE())";
         try (PreparedStatement stmt = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
-            stmt.setString(1, cedula);
+            stmt.setString(1, cedula.trim());
             stmt.setBigDecimal(2, monto);
             stmt.setBigDecimal(3, monto);
             stmt.setInt(4, plazo);

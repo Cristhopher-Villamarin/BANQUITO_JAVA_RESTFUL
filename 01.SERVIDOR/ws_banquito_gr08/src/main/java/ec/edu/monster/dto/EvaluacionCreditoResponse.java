@@ -5,8 +5,8 @@ import java.util.List;
 
 public class EvaluacionCreditoResponse {
     
-    private boolean sujetoCredito;
-    private boolean creditoAprobado;
+    private Boolean sujetoCredito;
+    private Boolean creditoAprobado;
     private BigDecimal montoMaximoCredito;
     private String mensaje;
     private Integer idCredito;
@@ -15,19 +15,19 @@ public class EvaluacionCreditoResponse {
     
     public EvaluacionCreditoResponse() {}
     
-    public boolean isSujetoCredito() {
+    public Boolean isSujetoCredito() {
         return sujetoCredito;
     }
     
-    public void setSujetoCredito(boolean sujetoCredito) {
+    public void setSujetoCredito(Boolean sujetoCredito) {
         this.sujetoCredito = sujetoCredito;
     }
     
-    public boolean isCreditoAprobado() {
+    public Boolean isCreditoAprobado() {
         return creditoAprobado;
     }
     
-    public void setCreditoAprobado(boolean creditoAprobado) {
+    public void setCreditoAprobado(Boolean creditoAprobado) {
         this.creditoAprobado = creditoAprobado;
     }
     
