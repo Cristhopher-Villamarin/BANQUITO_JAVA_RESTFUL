@@ -30,6 +30,6 @@ public class FacturaService {
     }
     
     public TablaAmortizacion obtenerTablaAmortizacion(int idFactura) throws IOException, ParseException {
-        return HttpClientUtil.get("/creditos/amortizacion/" + idFactura, TablaAmortizacion.class);
+        return HttpClientUtil.get("/creditos/" + idFactura + "/tabla-amortizacion", TablaAmortizacion.class);
     }
 }

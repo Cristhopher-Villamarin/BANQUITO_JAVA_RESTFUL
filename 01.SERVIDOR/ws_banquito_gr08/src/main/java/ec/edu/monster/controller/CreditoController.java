@@ -1,11 +1,18 @@
 package ec.edu.monster.controller;
 
+import ec.edu.monster.dto.AmortizacionDTO;
+import ec.edu.monster.dto.CuotaAmortizacionResponse;
 import ec.edu.monster.dto.EvaluacionCreditoRequest;
 import ec.edu.monster.dto.EvaluacionCreditoResponse;
+import ec.edu.monster.dto.TablaAmortizacionResponse;
+import ec.edu.monster.model.Credito;
+import ec.edu.monster.model.Cliente;
 import ec.edu.monster.service.CreditoService;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import java.math.BigDecimal;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -84,6 +91,50 @@ public class CreditoController {
             
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Error obteniendo monto máximo", e);
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity("{\"mensaje\":\"Error interno del servidor\"}")
+                    .build();
+        }
+    }
+    
+    @GET
+    @Path("/{idCredito}/tabla-amortizacion")
+    public Response obtenerTablaAmortizacion(@PathParam("idCredito") Integer idCredito) {
+        try {
+            List<AmortizacionDTO> tabla = creditoService.obtenerTablaAmortizacion(idCredito);
+            
+            if (tabla.isEmpty()) {
+                return Response.status(Response.Status.NOT_FOUND)
+                        .entity("{\"mensaje\": \"No se encontró tabla de amortización para el crédito ID: " + idCredito + "\"}")
+                        .build();
+            }
+            
+            return Response.ok(tabla).build();
+            
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Error obteniendo tabla de amortización", e);
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity("{\"mensaje\":\"Error interno del servidor\"}")
+                    .build();
+        }
+    }
+    
+    @GET
+    @Path("/amortizacion/{idCredito}")
+    public Response obtenerTablaAmortizacionComercializadora(@PathParam("idCredito") Integer idCredito) {
+        try {
+            TablaAmortizacionResponse tabla = creditoService.obtenerTablaAmortizacionParaComercializadora(idCredito);
+            
+            if (tabla == null) {
+                return Response.status(Response.Status.NOT_FOUND)
+                        .entity("{\"mensaje\": \"No se encontró tabla de amortización para el crédito ID: " + idCredito + "\"}")
+                        .build();
+            }
+            
+            return Response.ok(tabla).build();
+            
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Error obteniendo tabla de amortización para comercializadora", e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                     .entity("{\"mensaje\":\"Error interno del servidor\"}")
                     .build();

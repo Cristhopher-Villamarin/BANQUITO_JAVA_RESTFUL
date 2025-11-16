@@ -2,13 +2,18 @@ package ec.edu.monster.service;
 
 import ec.edu.monster.db.DatabaseConnection;
 import ec.edu.monster.dto.AmortizacionDTO;
+import ec.edu.monster.dto.CuotaAmortizacionResponse;
 import ec.edu.monster.dto.EvaluacionCreditoRequest;
 import ec.edu.monster.dto.EvaluacionCreditoResponse;
+import ec.edu.monster.dto.TablaAmortizacionResponse;
 import ec.edu.monster.model.Amortizacion;
 import ec.edu.monster.model.Cliente;
 import ec.edu.monster.model.Credito;
 import ec.edu.monster.model.Cuenta;
 import ec.edu.monster.model.Movimiento;
+import ec.edu.monster.utils.DatabaseConnection;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -320,5 +325,90 @@ public class CreditoService {
             }
             stmt.executeBatch();
         }
+    }
+    
+    public List<AmortizacionDTO> obtenerTablaAmortizacion(Integer idCredito) {
+        List<AmortizacionDTO> tabla = new ArrayList<>();
+        
+        try (Connection connection = DatabaseConnection.getConnection()) {
+            String sql = "SELECT numeroCuota, valorCuota, interesPagado, capitalPagado, saldo " +
+                        "FROM AMORTIZACION WHERE idCredito = ? ORDER BY numeroCuota";
+            
+            try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+                stmt.setInt(1, idCredito);
+                ResultSet rs = stmt.executeQuery();
+                
+                while (rs.next()) {
+                    AmortizacionDTO dto = new AmortizacionDTO(
+                        rs.getInt("numeroCuota"),
+                        rs.getBigDecimal("valorCuota"),
+                        rs.getBigDecimal("interesPagado"),
+                        rs.getBigDecimal("capitalPagado"),
+                        rs.getBigDecimal("saldo")
+                    );
+                    tabla.add(dto);
+                }
+            }
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error al obtener tabla de amortización para crédito ID: " + idCredito, e);
+        }
+        
+        return tabla;
+    }
+    
+    public TablaAmortizacionResponse obtenerTablaAmortizacionParaComercializadora(Integer idCredito) {
+        try (Connection connection = DatabaseConnection.getConnection()) {
+            // Obtener información del crédito y cliente
+            String sqlCredito = "SELECT cr.idCredito, cr.cedula, cr.montoAprobado, cr.plazoMeses, " +
+                               "cr.cuotaFija, cr.tasaAnual, cl.nombre " +
+                               "FROM CREDITO cr " +
+                               "JOIN CLIENTE cl ON cr.cedula = cl.cedula " +
+                               "WHERE cr.idCredito = ?";
+            
+            try (PreparedStatement stmt = connection.prepareStatement(sqlCredito)) {
+                stmt.setInt(1, idCredito);
+                ResultSet rs = stmt.executeQuery();
+                
+                if (rs.next()) {
+                    Integer idCreditoResult = rs.getInt("idCredito");
+                    String cedula = rs.getString("cedula");
+                    String nombreCliente = rs.getString("nombre");
+                    BigDecimal montoTotal = rs.getBigDecimal("montoAprobado");
+                    Integer plazoMeses = rs.getInt("plazoMeses");
+                    BigDecimal cuotaMensual = rs.getBigDecimal("cuotaFija");
+                    BigDecimal tasaInteres = rs.getBigDecimal("tasaAnual");
+                    
+                    // Obtener tabla de amortización
+                    List<AmortizacionDTO> tabla = obtenerTablaAmortizacion(idCredito);
+                    List<CuotaAmortizacionResponse> cuotas = new ArrayList<>();
+                    
+                    for (AmortizacionDTO dto : tabla) {
+                        CuotaAmortizacionResponse cuota = new CuotaAmortizacionResponse(
+                            dto.getNumeroCuota(),
+                            dto.getCapitalPagado(),
+                            dto.getInteresPagado(),
+                            dto.getValorCuota(),
+                            dto.getSaldo()
+                        );
+                        cuotas.add(cuota);
+                    }
+                    
+                    return new TablaAmortizacionResponse(
+                        idCreditoResult,
+                        nombreCliente,
+                        cedula,
+                        montoTotal,
+                        tasaInteres,
+                        plazoMeses,
+                        cuotaMensual,
+                        cuotas
+                    );
+                }
+            }
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error al obtener tabla de amortización para comercializadora, crédito ID: " + idCredito, e);
+        }
+        
+        return null;
     }
 }
