@@ -79,7 +79,7 @@
                             </div>
                         </label>
                     </div>
-                    <label class="field">
+                    <label class="field field--plazo field--hidden" id="plazoWrapper">
                         <span>Plazo (meses, solo crédito)</span>
                         <input id="plazoMeses" name="plazoMeses" type="number" min="3" max="24" placeholder="Ej: 12">
                     </label>
@@ -89,24 +89,19 @@
             <article class="card card--full">
                 <header>
                     <p class="card__eyebrow">Productos</p>
-                    <div>
-                        <h2>Buscar y agregar referencias</h2>
-                        <p>Usa el buscador y el selector para añadir productos con su cantidad.</p>
-                    </div>
+                 
                 </header>
 
                 <% if (lista != null && !lista.isEmpty()) { %>
                 <div class="product-selector">
                     <div class="product-selector__control">
-                        <label for="productSearch">Buscar producto</label>
-                        <input type="text" id="productSearch" placeholder="Escribe nombre o ID">
-                    </div>
-                    <div class="product-selector__control">
                         <label for="productoSelect">Listado</label>
                         <select id="productoSelect">
-                            <% for (Electrodomestico e : lista) { %>
+                            <% for (Electrodomestico e : lista) {
+                                   String nombreAttr = e.getNombre() != null ? e.getNombre().replace("\"", "&quot;") : "";
+                            %>
                                 <option value="<%= e.getIdElectrodomestico() %>"
-                                        data-nombre="<%= e.getNombre() %>"
+                                        data-nombre="<%= nombreAttr %>"
                                         data-precio="<%= e.getPrecioVenta() %>">
                                     <%= e.getIdElectrodomestico() %> - <%= e.getNombre() %> ($<%= e.getPrecioVenta() %>)
                                 </option>
@@ -133,13 +128,15 @@
                             <tr>
                                 <th>ID</th>
                                 <th>Producto</th>
+                                <th>Precio unitario</th>
                                 <th>Cantidad</th>
+                                <th>Total</th>
                                 <th></th>
                             </tr>
                             </thead>
                             <tbody>
                             <tr class="table__empty-row">
-                                <td colspan="4" class="table__empty">Aún no hay productos agregados.</td>
+                                <td colspan="6" class="table__empty">Aún no hay productos agregados.</td>
                             </tr>
                             </tbody>
                         </table>
@@ -161,23 +158,10 @@
 <% if (lista != null && !lista.isEmpty()) { %>
 <script>
     (function () {
-        const searchInput = document.getElementById('productSearch');
         const select = document.getElementById('productoSelect');
         const qtyInput = document.getElementById('cantidadInput');
         const addButton = document.getElementById('agregarProducto');
         const tableBody = document.querySelector('#productosSeleccionados tbody');
-
-        function filterOptions() {
-            const term = searchInput.value.toLowerCase();
-            Array.from(select.options).forEach(option => {
-                const text = option.textContent.toLowerCase();
-                option.hidden = term && !text.includes(term);
-            });
-            const firstVisible = Array.from(select.options).find(opt => !opt.hidden);
-            if (firstVisible) {
-                select.value = firstVisible.value;
-            }
-        }
 
         function renderEmptyRow() {
             if (!tableBody.querySelector('tr')) {
@@ -186,6 +170,10 @@
                 emptyRow.innerHTML = '<td colspan="4" class="table__empty">Aún no hay productos agregados.</td>';
                 tableBody.appendChild(emptyRow);
             }
+        }
+
+        function formatCurrency(value) {
+            return new Intl.NumberFormat('es-EC', { style: 'currency', currency: 'USD' }).format(value);
         }
 
         function addProduct() {
@@ -201,7 +189,8 @@
             }
 
             const productoId = option.value;
-            const nombre = option.dataset.nombre;
+            const nombre = option.dataset.nombre || option.textContent;
+            const precioUnitario = parseFloat(option.dataset.precio || '0');
             const existingRow = tableBody.querySelector(`tr[data-producto-id="${productoId}"]`);
 
             if (existingRow) {
@@ -209,6 +198,8 @@
                 const nuevaCantidad = parseInt(cantidadInput.value, 10) + cantidad;
                 cantidadInput.value = nuevaCantidad;
                 existingRow.querySelector('.cantidad-text').textContent = nuevaCantidad;
+                const totalCell = existingRow.querySelector('.total-text');
+                totalCell.textContent = formatCurrency(precioUnitario * nuevaCantidad);
                 return;
             }
 
@@ -219,14 +210,16 @@
             const row = document.createElement('tr');
             row.dataset.productoId = productoId;
             row.innerHTML = `
-                <td>${productoId}<input type="hidden" name="productoId" value="${productoId}"></td>
-                <td>${nombre}</td>
+                <td>\${productoId}<input type="hidden" name="productoId" value="\${productoId}"></td>
+                <td>\${nombre}</td>
+                <td class="price-text">\${formatCurrency(precioUnitario)}</td>
                 <td>
-                    <span class="cantidad-text">${cantidad}</span>
-                    <input type="hidden" name="cantidad" value="${cantidad}">
+                    <span class="cantidad-text">\${cantidad}</span>
+                    <input type="hidden" name="cantidad" value="\${cantidad}">
                 </td>
+                <td class="total-text">\${formatCurrency(precioUnitario * cantidad)}</td>
                 <td class="table__actions">
-                    <button type="button" class="ghost-btn ghost-btn--inline" aria-label="Eliminar" data-remove="${productoId}">Eliminar</button>
+                    <button type="button" class="ghost-btn ghost-btn--inline" aria-label="Eliminar" data-remove="\${productoId}">Eliminar</button>
                 </td>
             `;
             tableBody.appendChild(row);
@@ -242,7 +235,6 @@
             }
         }
 
-        searchInput.addEventListener('input', filterOptions);
         addButton.addEventListener('click', addProduct);
         tableBody.addEventListener('click', (event) => {
             const button = event.target.closest('button[data-remove]');
@@ -255,5 +247,24 @@
     })();
 </script>
 <% } %>
+
+<script>
+    (function () {
+        const radios = document.querySelectorAll('input[name="formaPago"]');
+        const plazoWrapper = document.getElementById('plazoWrapper');
+        const plazoInput = document.getElementById('plazoMeses');
+
+        function togglePlazo() {
+            const creditoSeleccionado = document.querySelector('input[name="formaPago"]:checked')?.value === 'CREDITO_DIRECTO';
+            plazoWrapper.classList.toggle('field--hidden', !creditoSeleccionado);
+            if (!creditoSeleccionado) {
+                plazoInput.value = '';
+            }
+        }
+
+        radios.forEach(radio => radio.addEventListener('change', togglePlazo));
+        togglePlazo();
+    })();
+</script>
 </body>
 </html>

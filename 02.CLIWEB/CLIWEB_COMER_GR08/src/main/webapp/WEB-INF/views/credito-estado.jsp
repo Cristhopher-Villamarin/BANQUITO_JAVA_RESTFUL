@@ -40,23 +40,21 @@
         </form>
     </section>
 
-    <% if (evaluacion != null) { %>
+    <% if (evaluacion != null) {
+           boolean sujeto = evaluacion.getSujetoCredito() != null && evaluacion.getSujetoCredito();
+    %>
         <section class="results">
             <article class="result-card">
                 <p class="result-card__label">Resultado</p>
-                <h2><%= evaluacion.getSujetoCredito() != null && evaluacion.getSujetoCredito() ? "Sujeto de crédito" : "No sujeto" %></h2>
+                <h2><%= sujeto ? "Sujeto de crédito" : "No sujeto" %></h2>
                 <p class="result-card__value">Cédula: <strong><%= cedula %></strong></p>
             </article>
+            <% if (sujeto) { %>
             <article class="result-card">
                 <p class="result-card__label">Monto máximo</p>
                 <h2><%= evaluacion.getMontoMaximoCredito() != null ? "$" + evaluacion.getMontoMaximoCredito() : "--" %></h2>
-                <p class="result-card__value">Cuota estimada: <strong><%= evaluacion.getCuotaMensual() != null ? "$" + evaluacion.getCuotaMensual() : "--" %></strong></p>
             </article>
-            <article class="result-card">
-                <p class="result-card__label">Estado del crédito</p>
-                <h2><%= evaluacion.getCreditoAprobado() != null && evaluacion.getCreditoAprobado() ? "Aprobado" : "Rechazado" %></h2>
-                <p class="result-card__value">ID crédito: <strong><%= evaluacion.getIdCredito() != null ? evaluacion.getIdCredito() : "--" %></strong></p>
-            </article>
+            <% } %>
         </section>
 
         <% if (evaluacion.getMensaje() != null) { %>

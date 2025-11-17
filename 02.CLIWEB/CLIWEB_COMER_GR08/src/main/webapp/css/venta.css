@@ -211,6 +211,10 @@ body {
     outline-offset: 2px;
 }
 
+.field--hidden {
+    display: none;
+}
+
 .radio-list {
     display: flex;
     flex-direction: column;
