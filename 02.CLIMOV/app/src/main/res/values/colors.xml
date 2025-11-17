@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Web Theme Colors -->
+    <color name="bg">#030712</color>
+    <color name="panel_dark">#050b16</color>
+    <color name="panel">#1E293B</color>
+    <color name="text">#f8fafc</color>
+    <color name="text_muted">#a5b4cc</color>
+    <color name="accent">#22d3ee</color>
+    <color name="accent_strong">#0ea5e9</color>
+    <color name="accent_warm">#f97316</color>
+    <color name="border">#94a3b833</color>
+    
+    <!-- Compatibility with existing layout -->
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="purple_500">#22d3ee</color>  <!-- Using accent color -->
+    <color name="purple_700">#0ea5e9</color>  <!-- Using accent_strong color -->
+    <color name="gray_600">#a5b4cc</color>
+    <color name="colorBackground">#121212</color>
+    <color name="colorSurface">#1E1E1E</color>
+    <color name="colorOnSurface">#FFFFFF</color>
+    <color name="colorPrimary">#6200EE</color>
+    <color name="colorPrimaryDark">#3700B3</color><!-- Using text_muted color -->
+    <color name="colorUserMenuBg">#030712</color>
+    <color name="colorUserMenuPanel">#0d1220</color>
+    <color name="colorUserMenuPanelAccent">#101a2c</color>
+    <color name="colorUserMenuText">#f8fafc</color>
+    <color name="colorUserMenuTextMuted">#a5b4cc</color>
+    <color name="colorUserMenuAccent">#22d3ee</color>
+    <color name="colorUserMenuAccentStrong">#0ea5e9</color>
+    <color name="colorUserMenuAccentWarm">#f97316</color>
+    <color name="colorUserMenuBorder">#3e4c5a</color>
+</resources>

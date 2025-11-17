@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="10dp"
+    android:background="?android:attr/selectableItemBackground"
+    android:minHeight="40dp">
+
+    <TextView
+        android:id="@+id/textCuota"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Cuota"
+        android:textSize="12sp"
+        android:textColor="@color/text"
+        android:gravity="center" />
+
+    <View
+        android:layout_width="1dp"
+        android:layout_height="match_parent"
+        android:background="#CCCCCC"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="4dp" />
+
+    <TextView
+        android:id="@+id/textCapital"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="2"
+        android:text="Capital"
+        android:textSize="12sp"
+        android:textColor="@color/text"
+        android:gravity="end" />
+
+    <View
+        android:layout_width="1dp"
+        android:layout_height="match_parent"
+        android:background="#CCCCCC"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="4dp" />
+
+    <TextView
+        android:id="@+id/textInteres"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="2"
+        android:text="Interés"
+        android:textSize="12sp"
+        android:textColor="@color/text"
+        android:gravity="end" />
+
+    <View
+        android:layout_width="1dp"
+        android:layout_height="match_parent"
+        android:background="#CCCCCC"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="4dp" />
+
+    <TextView
+        android:id="@+id/textValorCuota"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="2"
+        android:text="Valor Cuota"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        android:gravity="end"
+        android:textColor="#1976D2" />
+
+    <View
+        android:layout_width="1dp"
+        android:layout_height="match_parent"
+        android:background="#CCCCCC"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="4dp" />
+
+    <TextView
+        android:id="@+id/textSaldo"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="2"
+        android:text="Saldo"
+        android:textSize="12sp"
+        android:gravity="end"
+        android:textColor="#D32F2F" />
+
+</LinearLayout>
+
