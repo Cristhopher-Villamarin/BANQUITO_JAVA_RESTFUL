@@ -1,0 +1,7 @@
+C:\Users\JOHAN\Documents\ESPE\Octavo\Arquitectura\Evaluación Parcial 1\BANQUITO_JAVA_RESTFUL\SERVIDOR SOAP\ws_banquito_dotnet_gr08\obj\Debug\ws_banquito_dotnet_gr08.csproj.AssemblyReference.cache
+C:\Users\JOHAN\Documents\ESPE\Octavo\Arquitectura\Evaluación Parcial 1\BANQUITO_JAVA_RESTFUL\SERVIDOR SOAP\ws_banquito_dotnet_gr08\obj\Debug\ws_banquito_dotnet_gr08.csproj.CoreCompileInputs.cache
+C:\Users\JOHAN\Documents\ESPE\Octavo\Arquitectura\Evaluación Parcial 1\BANQUITO_JAVA_RESTFUL\SERVIDOR SOAP\ws_banquito_dotnet_gr08\bin\Debug\ws_banquito_dotnet_gr08.dll.config
+C:\Users\JOHAN\Documents\ESPE\Octavo\Arquitectura\Evaluación Parcial 1\BANQUITO_JAVA_RESTFUL\SERVIDOR SOAP\ws_banquito_dotnet_gr08\bin\Debug\ws_banquito_dotnet_gr08.dll
+C:\Users\JOHAN\Documents\ESPE\Octavo\Arquitectura\Evaluación Parcial 1\BANQUITO_JAVA_RESTFUL\SERVIDOR SOAP\ws_banquito_dotnet_gr08\bin\Debug\ws_banquito_dotnet_gr08.pdb
+C:\Users\JOHAN\Documents\ESPE\Octavo\Arquitectura\Evaluación Parcial 1\BANQUITO_JAVA_RESTFUL\SERVIDOR SOAP\ws_banquito_dotnet_gr08\obj\Debug\ws_banquito_dotnet_gr08.dll
+C:\Users\JOHAN\Documents\ESPE\Octavo\Arquitectura\Evaluación Parcial 1\BANQUITO_JAVA_RESTFUL\SERVIDOR SOAP\ws_banquito_dotnet_gr08\obj\Debug\ws_banquito_dotnet_gr08.pdb

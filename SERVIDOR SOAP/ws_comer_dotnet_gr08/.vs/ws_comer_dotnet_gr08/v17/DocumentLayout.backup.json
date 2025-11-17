@@ -1,0 +1,88 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\JOHAN\\Documents\\ESPE\\Octavo\\Arquitectura\\Evaluaci\u00F3n Parcial 1\\BANQUITO_JAVA_RESTFUL\\SERVIDOR SOAP\\ws_comer_dotnet_gr08\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{6AC71A38-356A-4BEF-B6F1-84A83A71ADA8}|ws_comer_dotnet_gr08.csproj|c:\\users\\johan\\documents\\espe\\octavo\\arquitectura\\evaluaci\u00F3n parcial 1\\banquito_java_restful\\servidor soap\\ws_comer_dotnet_gr08\\ec.edu.monster.model\\factura.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6AC71A38-356A-4BEF-B6F1-84A83A71ADA8}|ws_comer_dotnet_gr08.csproj|solutionrelative:ec.edu.monster.model\\factura.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6AC71A38-356A-4BEF-B6F1-84A83A71ADA8}|ws_comer_dotnet_gr08.csproj|c:\\users\\johan\\documents\\espe\\octavo\\arquitectura\\evaluaci\u00F3n parcial 1\\banquito_java_restful\\servidor soap\\ws_comer_dotnet_gr08\\ec.edu.monster.service\\ventaservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6AC71A38-356A-4BEF-B6F1-84A83A71ADA8}|ws_comer_dotnet_gr08.csproj|solutionrelative:ec.edu.monster.service\\ventaservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6AC71A38-356A-4BEF-B6F1-84A83A71ADA8}|ws_comer_dotnet_gr08.csproj|c:\\users\\johan\\documents\\espe\\octavo\\arquitectura\\evaluaci\u00F3n parcial 1\\banquito_java_restful\\servidor soap\\ws_comer_dotnet_gr08\\ec.edu.monster.db\\databaseconnection.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6AC71A38-356A-4BEF-B6F1-84A83A71ADA8}|ws_comer_dotnet_gr08.csproj|solutionrelative:ec.edu.monster.db\\databaseconnection.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6AC71A38-356A-4BEF-B6F1-84A83A71ADA8}|ws_comer_dotnet_gr08.csproj|c:\\users\\johan\\documents\\espe\\octavo\\arquitectura\\evaluaci\u00F3n parcial 1\\banquito_java_restful\\servidor soap\\ws_comer_dotnet_gr08\\iservice1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6AC71A38-356A-4BEF-B6F1-84A83A71ADA8}|ws_comer_dotnet_gr08.csproj|solutionrelative:iservice1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Factura.cs",
+              "DocumentMoniker": "C:\\Users\\JOHAN\\Documents\\ESPE\\Octavo\\Arquitectura\\Evaluaci\u00F3n Parcial 1\\BANQUITO_JAVA_RESTFUL\\SERVIDOR SOAP\\ws_comer_dotnet_gr08\\ec.edu.monster.model\\Factura.cs",
+              "RelativeDocumentMoniker": "ec.edu.monster.model\\Factura.cs",
+              "ToolTip": "C:\\Users\\JOHAN\\Documents\\ESPE\\Octavo\\Arquitectura\\Evaluaci\u00F3n Parcial 1\\BANQUITO_JAVA_RESTFUL\\SERVIDOR SOAP\\ws_comer_dotnet_gr08\\ec.edu.monster.model\\Factura.cs",
+              "RelativeToolTip": "ec.edu.monster.model\\Factura.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABYAAAAtAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-17T06:35:47.392Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "VentaService.cs",
+              "DocumentMoniker": "C:\\Users\\JOHAN\\Documents\\ESPE\\Octavo\\Arquitectura\\Evaluaci\u00F3n Parcial 1\\BANQUITO_JAVA_RESTFUL\\SERVIDOR SOAP\\ws_comer_dotnet_gr08\\ec.edu.monster.service\\VentaService.cs",
+              "RelativeDocumentMoniker": "ec.edu.monster.service\\VentaService.cs",
+              "ToolTip": "C:\\Users\\JOHAN\\Documents\\ESPE\\Octavo\\Arquitectura\\Evaluaci\u00F3n Parcial 1\\BANQUITO_JAVA_RESTFUL\\SERVIDOR SOAP\\ws_comer_dotnet_gr08\\ec.edu.monster.service\\VentaService.cs",
+              "RelativeToolTip": "ec.edu.monster.service\\VentaService.cs",
+              "ViewState": "AgIAAP4AAAAAAAAAAAAUwPoAAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-17T06:21:22.706Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "DatabaseConnection.cs",
+              "DocumentMoniker": "C:\\Users\\JOHAN\\Documents\\ESPE\\Octavo\\Arquitectura\\Evaluaci\u00F3n Parcial 1\\BANQUITO_JAVA_RESTFUL\\SERVIDOR SOAP\\ws_comer_dotnet_gr08\\ec.edu.monster.db\\DatabaseConnection.cs",
+              "RelativeDocumentMoniker": "ec.edu.monster.db\\DatabaseConnection.cs",
+              "ToolTip": "C:\\Users\\JOHAN\\Documents\\ESPE\\Octavo\\Arquitectura\\Evaluaci\u00F3n Parcial 1\\BANQUITO_JAVA_RESTFUL\\SERVIDOR SOAP\\ws_comer_dotnet_gr08\\ec.edu.monster.db\\DatabaseConnection.cs",
+              "RelativeToolTip": "ec.edu.monster.db\\DatabaseConnection.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAvAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-17T06:21:02.051Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "IService1.cs",
+              "DocumentMoniker": "C:\\Users\\JOHAN\\Documents\\ESPE\\Octavo\\Arquitectura\\Evaluaci\u00F3n Parcial 1\\BANQUITO_JAVA_RESTFUL\\SERVIDOR SOAP\\ws_comer_dotnet_gr08\\IService1.cs",
+              "RelativeDocumentMoniker": "IService1.cs",
+              "ToolTip": "C:\\Users\\JOHAN\\Documents\\ESPE\\Octavo\\Arquitectura\\Evaluaci\u00F3n Parcial 1\\BANQUITO_JAVA_RESTFUL\\SERVIDOR SOAP\\ws_comer_dotnet_gr08\\IService1.cs",
+              "RelativeToolTip": "IService1.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-17T03:35:49.431Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

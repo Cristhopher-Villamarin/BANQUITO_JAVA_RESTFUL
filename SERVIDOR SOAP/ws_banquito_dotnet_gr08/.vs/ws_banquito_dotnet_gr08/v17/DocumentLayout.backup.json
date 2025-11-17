@@ -1,0 +1,146 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\JOHAN\\Documents\\ESPE\\Octavo\\Arquitectura\\Evaluaci\u00F3n Parcial 1\\BANQUITO_JAVA_RESTFUL\\SERVIDOR SOAP\\ws_banquito_dotnet_gr08\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{75F4597F-9CA4-499C-9A23-E3F571DD6051}|ws_banquito_dotnet_gr08.csproj|c:\\users\\johan\\documents\\espe\\octavo\\arquitectura\\evaluaci\u00F3n parcial 1\\banquito_java_restful\\servidor soap\\ws_banquito_dotnet_gr08\\ec.edu.monster.db\\databaseconnection.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{75F4597F-9CA4-499C-9A23-E3F571DD6051}|ws_banquito_dotnet_gr08.csproj|solutionrelative:ec.edu.monster.db\\databaseconnection.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{75F4597F-9CA4-499C-9A23-E3F571DD6051}|ws_banquito_dotnet_gr08.csproj|c:\\users\\johan\\documents\\espe\\octavo\\arquitectura\\evaluaci\u00F3n parcial 1\\banquito_java_restful\\servidor soap\\ws_banquito_dotnet_gr08\\service1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{75F4597F-9CA4-499C-9A23-E3F571DD6051}|ws_banquito_dotnet_gr08.csproj|solutionrelative:service1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{75F4597F-9CA4-499C-9A23-E3F571DD6051}|ws_banquito_dotnet_gr08.csproj|c:\\users\\johan\\documents\\espe\\octavo\\arquitectura\\evaluaci\u00F3n parcial 1\\banquito_java_restful\\servidor soap\\ws_banquito_dotnet_gr08\\iservice1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{75F4597F-9CA4-499C-9A23-E3F571DD6051}|ws_banquito_dotnet_gr08.csproj|solutionrelative:iservice1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{75F4597F-9CA4-499C-9A23-E3F571DD6051}|ws_banquito_dotnet_gr08.csproj|c:\\users\\johan\\documents\\espe\\octavo\\arquitectura\\evaluaci\u00F3n parcial 1\\banquito_java_restful\\servidor soap\\ws_banquito_dotnet_gr08\\creditodtos.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{75F4597F-9CA4-499C-9A23-E3F571DD6051}|ws_banquito_dotnet_gr08.csproj|solutionrelative:creditodtos.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{75F4597F-9CA4-499C-9A23-E3F571DD6051}|ws_banquito_dotnet_gr08.csproj|c:\\users\\johan\\documents\\espe\\octavo\\arquitectura\\evaluaci\u00F3n parcial 1\\banquito_java_restful\\servidor soap\\ws_banquito_dotnet_gr08\\ec.edu.monster.service\\creditoservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{75F4597F-9CA4-499C-9A23-E3F571DD6051}|ws_banquito_dotnet_gr08.csproj|solutionrelative:ec.edu.monster.service\\creditoservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{75F4597F-9CA4-499C-9A23-E3F571DD6051}|ws_banquito_dotnet_gr08.csproj|c:\\users\\johan\\documents\\espe\\octavo\\arquitectura\\evaluaci\u00F3n parcial 1\\banquito_java_restful\\servidor soap\\ws_banquito_dotnet_gr08\\app.config||{FA3CD31E-987B-443A-9B81-186104E8DAC1}",
+      "RelativeMoniker": "D:0:0:{75F4597F-9CA4-499C-9A23-E3F571DD6051}|ws_banquito_dotnet_gr08.csproj|solutionrelative:app.config||{FA3CD31E-987B-443A-9B81-186104E8DAC1}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 10,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{b1e99781-ab81-11d0-b683-00aa00a3ee26}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{a83394e3-39c2-4678-a3c8-364b69d78fd3}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{3ae79031-e1bc-11d0-8f78-00a0c9110057}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{34e76e81-ee4a-11d0-ae2e-00a0c90fffc3}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{0174dea2-fdbe-4ef1-8f99-c0beae78880f}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{d78612c7-9962-4b83-95d9-268046dad23a}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Service1.cs",
+              "DocumentMoniker": "C:\\Users\\JOHAN\\Documents\\ESPE\\Octavo\\Arquitectura\\Evaluaci\u00F3n Parcial 1\\BANQUITO_JAVA_RESTFUL\\SERVIDOR SOAP\\ws_banquito_dotnet_gr08\\Service1.cs",
+              "RelativeDocumentMoniker": "Service1.cs",
+              "ToolTip": "C:\\Users\\JOHAN\\Documents\\ESPE\\Octavo\\Arquitectura\\Evaluaci\u00F3n Parcial 1\\BANQUITO_JAVA_RESTFUL\\SERVIDOR SOAP\\ws_banquito_dotnet_gr08\\Service1.cs",
+              "RelativeToolTip": "Service1.cs",
+              "ViewState": "AgIAAEwAAAAAAAAAAAAkwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-17T05:21:14.666Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "CreditoDtos.cs",
+              "DocumentMoniker": "C:\\Users\\JOHAN\\Documents\\ESPE\\Octavo\\Arquitectura\\Evaluaci\u00F3n Parcial 1\\BANQUITO_JAVA_RESTFUL\\SERVIDOR SOAP\\ws_banquito_dotnet_gr08\\CreditoDtos.cs",
+              "RelativeDocumentMoniker": "CreditoDtos.cs",
+              "ToolTip": "C:\\Users\\JOHAN\\Documents\\ESPE\\Octavo\\Arquitectura\\Evaluaci\u00F3n Parcial 1\\BANQUITO_JAVA_RESTFUL\\SERVIDOR SOAP\\ws_banquito_dotnet_gr08\\CreditoDtos.cs",
+              "RelativeToolTip": "CreditoDtos.cs",
+              "ViewState": "AgIAAEAAAAAAAAAAAAAzwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-17T05:20:45.574Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "App.config",
+              "DocumentMoniker": "C:\\Users\\JOHAN\\Documents\\ESPE\\Octavo\\Arquitectura\\Evaluaci\u00F3n Parcial 1\\BANQUITO_JAVA_RESTFUL\\SERVIDOR SOAP\\ws_banquito_dotnet_gr08\\App.config",
+              "RelativeDocumentMoniker": "App.config",
+              "ToolTip": "C:\\Users\\JOHAN\\Documents\\ESPE\\Octavo\\Arquitectura\\Evaluaci\u00F3n Parcial 1\\BANQUITO_JAVA_RESTFUL\\SERVIDOR SOAP\\ws_banquito_dotnet_gr08\\App.config",
+              "RelativeToolTip": "App.config",
+              "ViewState": "AgIAABsAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000601|",
+              "WhenOpened": "2025-11-17T05:13:33.961Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "CreditoService.cs",
+              "DocumentMoniker": "C:\\Users\\JOHAN\\Documents\\ESPE\\Octavo\\Arquitectura\\Evaluaci\u00F3n Parcial 1\\BANQUITO_JAVA_RESTFUL\\SERVIDOR SOAP\\ws_banquito_dotnet_gr08\\ec.edu.monster.service\\CreditoService.cs",
+              "RelativeDocumentMoniker": "ec.edu.monster.service\\CreditoService.cs",
+              "ToolTip": "C:\\Users\\JOHAN\\Documents\\ESPE\\Octavo\\Arquitectura\\Evaluaci\u00F3n Parcial 1\\BANQUITO_JAVA_RESTFUL\\SERVIDOR SOAP\\ws_banquito_dotnet_gr08\\ec.edu.monster.service\\CreditoService.cs",
+              "RelativeToolTip": "ec.edu.monster.service\\CreditoService.cs",
+              "ViewState": "AgIAAIEBAAAAAAAAAAAAAAMAAAAcAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-17T04:35:17.733Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "DatabaseConnection.cs",
+              "DocumentMoniker": "C:\\Users\\JOHAN\\Documents\\ESPE\\Octavo\\Arquitectura\\Evaluaci\u00F3n Parcial 1\\BANQUITO_JAVA_RESTFUL\\SERVIDOR SOAP\\ws_banquito_dotnet_gr08\\ec.edu.monster.db\\DatabaseConnection.cs",
+              "RelativeDocumentMoniker": "ec.edu.monster.db\\DatabaseConnection.cs",
+              "ToolTip": "C:\\Users\\JOHAN\\Documents\\ESPE\\Octavo\\Arquitectura\\Evaluaci\u00F3n Parcial 1\\BANQUITO_JAVA_RESTFUL\\SERVIDOR SOAP\\ws_banquito_dotnet_gr08\\ec.edu.monster.db\\DatabaseConnection.cs",
+              "RelativeToolTip": "ec.edu.monster.db\\DatabaseConnection.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAvAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-17T04:34:57.013Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "IService1.cs",
+              "DocumentMoniker": "C:\\Users\\JOHAN\\Documents\\ESPE\\Octavo\\Arquitectura\\Evaluaci\u00F3n Parcial 1\\BANQUITO_JAVA_RESTFUL\\SERVIDOR SOAP\\ws_banquito_dotnet_gr08\\IService1.cs",
+              "RelativeDocumentMoniker": "IService1.cs",
+              "ToolTip": "C:\\Users\\JOHAN\\Documents\\ESPE\\Octavo\\Arquitectura\\Evaluaci\u00F3n Parcial 1\\BANQUITO_JAVA_RESTFUL\\SERVIDOR SOAP\\ws_banquito_dotnet_gr08\\IService1.cs",
+              "RelativeToolTip": "IService1.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-17T03:34:32.076Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
