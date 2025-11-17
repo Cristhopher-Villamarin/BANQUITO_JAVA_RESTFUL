@@ -209,15 +209,15 @@
                         android:textSize="12sp"
                         android:layout_marginBottom="16dp" />
 
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/recyclerViewProductos"
+                    <LinearLayout
+                        android:id="@+id/containerProductos"
                         android:layout_width="match_parent"
-                        android:layout_height="200dp"
-                        android:nestedScrollingEnabled="false"
-                        android:clipToPadding="false"
-                        android:padding="4dp"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
                         android:divider="@color/border"
-                        android:dividerHeight="1dp" />
+                        android:showDividers="middle"
+                        android:dividerPadding="8dp"
+                        android:padding="4dp" />
 
                 </LinearLayout>
 

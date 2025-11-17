@@ -3,16 +3,16 @@ package ec.edu.monster;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ListView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.gson.Gson;
 
-import java.util.ArrayList;
+import java.math.BigDecimal;
 import java.util.List;
 
 import ec.edu.monster.model.DetalleVentaResponse;
@@ -27,7 +27,7 @@ public class VentaConfirmacionActivity extends AppCompatActivity {
     private TextView textSubtotal;
     private TextView textDescuento;
     private TextView textTotal;
-    private ListView listViewDetalles;
+    private LinearLayout containerDetalles; // ← Cambio: LinearLayout en lugar de ListView
     private Button btnVolverMenu;
 
     @Override
@@ -44,7 +44,7 @@ public class VentaConfirmacionActivity extends AppCompatActivity {
         textSubtotal = findViewById(R.id.textSubtotal);
         textDescuento = findViewById(R.id.textDescuento);
         textTotal = findViewById(R.id.textTotal);
-        listViewDetalles = findViewById(R.id.listViewDetalles);
+        containerDetalles = findViewById(R.id.containerDetalles); // ← Cambio: findViewById para LinearLayout
         btnVolverMenu = findViewById(R.id.btnVolverMenu);
 
         btnVolverMenu.setOnClickListener(v -> {
@@ -54,7 +54,7 @@ public class VentaConfirmacionActivity extends AppCompatActivity {
 
         String cedula = getIntent().getStringExtra("cedula");
         String nombre = getIntent().getStringExtra("nombre");
-        
+
         // Intentar obtener VentaResponse desde JSON (método más confiable)
         VentaResponse venta = null;
         String ventaJson = getIntent().getStringExtra("ventaJson");
@@ -66,7 +66,7 @@ public class VentaConfirmacionActivity extends AppCompatActivity {
                 android.util.Log.e("VentaConfirmacion", "Error al deserializar venta desde JSON", e);
             }
         }
-        
+
         // Si no se pudo obtener desde JSON, intentar desde Serializable (fallback)
         if (venta == null) {
             try {
@@ -78,8 +78,8 @@ public class VentaConfirmacionActivity extends AppCompatActivity {
 
         if (venta == null) {
             // Si no se recibió la venta, mostrar error y volver
-            android.widget.Toast.makeText(this, "Error: No se recibieron los datos de la venta", 
-                android.widget.Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Error: No se recibieron los datos de la venta",
+                    Toast.LENGTH_LONG).show();
             finish();
             return;
         }
@@ -93,63 +93,65 @@ public class VentaConfirmacionActivity extends AppCompatActivity {
             textCliente.setText("Cliente: " + (nombre != null ? nombre : "") + " (" + (cedula != null ? cedula : "") + ")");
             textFormaPago.setText("Forma de pago: " + (venta.getFormaPago() != null ? venta.getFormaPago() : ""));
             textEstado.setText("Estado: " + (venta.getEstadoFactura() != null ? venta.getEstadoFactura() : ""));
-            
+
             if (venta.getSubtotal() != null) {
                 textSubtotal.setText("Subtotal: $" + String.format("%.2f", venta.getSubtotal()));
             } else {
                 textSubtotal.setText("Subtotal: $0.00");
             }
-            
+
             if (venta.getDescuento() != null) {
                 textDescuento.setText("Descuento: $" + String.format("%.2f", venta.getDescuento()));
             } else {
                 textDescuento.setText("Descuento: $0.00");
             }
-            
+
             if (venta.getTotal() != null) {
                 textTotal.setText("TOTAL: $" + String.format("%.2f", venta.getTotal()));
             } else {
                 textTotal.setText("TOTAL: $0.00");
             }
 
+            // ← Cambio: Bloque nuevo para detalles (reutiliza item_detalle_venta.xml)
             List<DetalleVentaResponse> detalles = venta.getDetalles();
             if (detalles != null && !detalles.isEmpty()) {
-                List<String> items = new ArrayList<>();
                 for (DetalleVentaResponse d : detalles) {
-                    if (d != null) {
-                        items.add(String.format("Producto: %s\nCantidad: %d | Precio unitario: $%.2f | Subtotal: $%.2f",
+                    if (d == null) continue;
+
+                    // Infla tu layout existente
+                    View itemView = getLayoutInflater().inflate(
+                            R.layout.item_detalle_venta, containerDetalles, false);
+
+                    // Usa el único TextView que tiene (id=textDetalle)
+                    TextView textDetalle = itemView.findViewById(R.id.textDetalle);
+
+                    // Formatea el texto como en tu código original
+                    textDetalle.setText(String.format("Producto: %s\nCantidad: %d | Precio unitario: $%.2f | Subtotal: $%.2f",
                             d.getNombreElectrodomestico() != null ? d.getNombreElectrodomestico() : "",
                             d.getCantidad() != null ? d.getCantidad() : 0,
-                            d.getPrecioUnitario() != null ? d.getPrecioUnitario() : java.math.BigDecimal.ZERO,
-                            d.getSubtotalLinea() != null ? d.getSubtotalLinea() : java.math.BigDecimal.ZERO));
-                    }
-                }
-                if (!items.isEmpty()) {
-                    ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
-                            R.layout.item_detalle_venta, R.id.textDetalle, items);
-                    listViewDetalles.setAdapter(adapter);
-                } else {
-                    List<String> emptyItems = new ArrayList<>();
-                    emptyItems.add("No hay detalles disponibles");
-                    ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
-                            R.layout.item_detalle_venta, R.id.textDetalle, emptyItems);
-                    listViewDetalles.setAdapter(adapter);
+                            d.getPrecioUnitario() != null ? d.getPrecioUnitario() : BigDecimal.ZERO,
+                            d.getSubtotalLinea() != null ? d.getSubtotalLinea() : BigDecimal.ZERO));
+
+                    // Agrega el ítem al contenedor
+                    containerDetalles.addView(itemView);
                 }
             } else {
-                List<String> emptyItems = new ArrayList<>();
-                emptyItems.add("No hay detalles disponibles");
-                ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
-                        R.layout.item_detalle_venta, R.id.textDetalle, emptyItems);
-                listViewDetalles.setAdapter(adapter);
+                // Mensaje cuando no hay detalles
+                TextView emptyView = new TextView(this);
+                emptyView.setText("No hay detalles disponibles");
+                emptyView.setTextColor(getResources().getColor(R.color.text_muted, getTheme()));
+                emptyView.setPadding(0, 32, 0, 32);
+                emptyView.setGravity(android.view.Gravity.CENTER);
+                emptyView.setTextSize(14);
+                containerDetalles.addView(emptyView);
             }
         } else {
             // Si la venta no fue exitosa, mostrar mensaje y volver
             String mensaje = venta != null && venta.getMensaje() != null ? venta.getMensaje() : "Error desconocido";
-            android.widget.Toast.makeText(this, 
-                "La venta no fue exitosa: " + mensaje,
-                android.widget.Toast.LENGTH_LONG).show();
+            Toast.makeText(this,
+                    "La venta no fue exitosa: " + mensaje,
+                    Toast.LENGTH_LONG).show();
             finish();
         }
     }
 }
-
