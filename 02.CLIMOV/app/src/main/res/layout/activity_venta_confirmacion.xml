@@ -159,14 +159,14 @@
                         android:textStyle="bold"
                         android:layout_marginBottom="16dp" />
 
-                    <ListView
-                        android:id="@+id/listViewDetalles"
+                    <LinearLayout
+                        android:id="@+id/containerDetalles"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/text"
-                        android:minHeight="200dp"
+                        android:orientation="vertical"
                         android:divider="@color/border"
-                        android:dividerHeight="1dp" />
+                        android:showDividers="middle"
+                        android:dividerPadding="8dp" />
 
                 </LinearLayout>
 

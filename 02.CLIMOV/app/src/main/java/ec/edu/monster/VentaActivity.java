@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
@@ -51,7 +52,7 @@ public class VentaActivity extends AppCompatActivity {
     private EditText editPlazo;
     private TextInputLayout layoutPlazo;
     private RadioGroup radioFormaPago;
-    private RecyclerView recyclerViewProductos;
+    private LinearLayout containerProductos;
     private RecyclerView recyclerViewResumen;
     private Button btnProcesar;
     private ProgressBar progressBar;
@@ -94,7 +95,7 @@ public class VentaActivity extends AppCompatActivity {
         editPlazo = findViewById(R.id.editPlazo);
         layoutPlazo = findViewById(R.id.layoutPlazo);
         radioFormaPago = findViewById(R.id.radioFormaPago);
-        recyclerViewProductos = findViewById(R.id.recyclerViewProductos);
+        containerProductos = findViewById(R.id.containerProductos);
         recyclerViewResumen = findViewById(R.id.recyclerViewResumen);
         btnProcesar = findViewById(R.id.btnProcesar);
         progressBar = findViewById(R.id.progressBar);
@@ -348,11 +349,20 @@ public class VentaActivity extends AppCompatActivity {
                     cantidades.put(e.getIdElectrodomestico(), 0);
                 }
 
-                ProductoDisponibleAdapter adapter = new ProductoDisponibleAdapter(result);
-                adapter.setOnItemClickListener(producto -> mostrarDialogoCantidad(producto));
+                // ← Cambio: Infla ítems dinámicamente en LinearLayout
+                containerProductos.removeAllViews(); // Limpia por si acaso
+                for (Electrodomestico producto : result) {
+                    View itemView = getLayoutInflater().inflate(
+                            R.layout.item_producto_disponible, containerProductos, false);
 
-                recyclerViewProductos.setLayoutManager(new LinearLayoutManager(VentaActivity.this));
-                recyclerViewProductos.setAdapter(adapter);
+                    TextView textProducto = itemView.findViewById(R.id.textProducto);
+                    textProducto.setText(String.format("%s - $%.2f", producto.getNombre(), producto.getPrecioVenta()));
+
+                    // Agrega click listener directamente
+                    itemView.setOnClickListener(v -> mostrarDialogoCantidad(producto));
+
+                    containerProductos.addView(itemView);
+                }
 
                 actualizarResumen(); // inicial vacío
             } else {
