@@ -34,6 +34,7 @@
         <activity android:name=".VentaConfirmacionActivity" android:exported="false"/>
         <activity android:name=".CreditoEstadoActivity" android:exported="false"/>
         <activity android:name=".CreditoAmortizacionActivity" android:exported="false"/>
+        <activity android:name=".FacturasClienteActivity" android:exported="false"/>
 
     </application>
 

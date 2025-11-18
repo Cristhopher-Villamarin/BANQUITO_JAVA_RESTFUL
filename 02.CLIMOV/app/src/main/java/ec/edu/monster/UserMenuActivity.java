@@ -40,6 +40,7 @@ public class UserMenuActivity extends AppCompatActivity {
         Button btnVenta = findViewById(R.id.btnVenta);
         Button btnCreditoEstado = findViewById(R.id.btnCreditoEstado);
         Button btnAmortizacion = findViewById(R.id.btnAmortizacion);
+        Button btnFacturas = findViewById(R.id.btnFacturas);
 
         btnCatalogo.setOnClickListener(v -> {
             startActivity(new Intent(this, CatalogoActivity.class));
@@ -55,6 +56,10 @@ public class UserMenuActivity extends AppCompatActivity {
 
         btnAmortizacion.setOnClickListener(v -> {
             startActivity(new Intent(this, CreditoAmortizacionActivity.class));
+        });
+
+        btnFacturas.setOnClickListener(v -> {
+            startActivity(new Intent(this, FacturasClienteActivity.class));
         });
 
         // Configurar OnBackPressedDispatcher (reemplazo moderno de onBackPressed)

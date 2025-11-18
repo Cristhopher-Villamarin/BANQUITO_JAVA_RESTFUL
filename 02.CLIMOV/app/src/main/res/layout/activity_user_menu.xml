@@ -128,6 +128,23 @@
                 app:backgroundTint="@color/accent"
                 android:elevation="2dp"
                 android:stateListAnimator="@null"
+                android:letterSpacing="0.1"
+                android:layout_marginBottom="16dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnFacturas"
+                android:layout_width="match_parent"
+                android:layout_height="64dp"
+                android:text="Facturas"
+                android:textColor="@color/bg"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:icon="@drawable/ic_verified"
+                app:iconTint="@color/bg"
+                app:cornerRadius="12dp"
+                app:backgroundTint="@color/accent"
+                android:elevation="2dp"
+                android:stateListAnimator="@null"
                 android:letterSpacing="0.1" />
 
         </LinearLayout>
