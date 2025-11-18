@@ -5,12 +5,14 @@ import java.math.BigDecimal;
 public class ElectrodomesticoRequest {
     private String nombre;
     private BigDecimal precioVenta;
+    private String fotoUrl;
 
     public ElectrodomesticoRequest() {}
 
-    public ElectrodomesticoRequest(String nombre, BigDecimal precioVenta) {
+    public ElectrodomesticoRequest(String nombre, BigDecimal precioVenta, String fotoUrl) {
         this.nombre = nombre;
         this.precioVenta = precioVenta;
+        this.fotoUrl = fotoUrl;
     }
 
     public String getNombre() {
@@ -27,5 +29,13 @@ public class ElectrodomesticoRequest {
 
     public void setPrecioVenta(BigDecimal precioVenta) {
         this.precioVenta = precioVenta;
+    }
+
+    public String getFotoUrl() {
+        return fotoUrl;
+    }
+
+    public void setFotoUrl(String fotoUrl) {
+        this.fotoUrl = fotoUrl;
     }
 }

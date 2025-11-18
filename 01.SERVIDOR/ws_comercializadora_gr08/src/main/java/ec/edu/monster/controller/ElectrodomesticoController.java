@@ -2,7 +2,10 @@ package ec.edu.monster.controller;
 
 import ec.edu.monster.dto.ElectrodomesticoRequest;
 import ec.edu.monster.dto.ElectrodomesticoResponse;
+import ec.edu.monster.dto.FotoUploadRequest;
+import ec.edu.monster.dto.FotoUploadResponse;
 import ec.edu.monster.service.ElectrodomesticoService;
+import ec.edu.monster.service.SupabaseStorageService;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
@@ -22,6 +25,8 @@ public class ElectrodomesticoController {
     
     @Inject
     private ElectrodomesticoService electrodomesticoService;
+
+    private final SupabaseStorageService supabaseStorageService = new SupabaseStorageService();
     
     @GET
     @Path("/health")
@@ -44,6 +49,30 @@ public class ElectrodomesticoController {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                 .entity(createErrorResponse("Error listando electrodomésticos"))
                 .build();
+        }
+    }
+
+    @POST
+    @Path("/foto")
+    public Response subirFoto(FotoUploadRequest request) {
+        try {
+            if (request == null || request.getBase64() == null || request.getBase64().isBlank()) {
+                return Response.status(Response.Status.BAD_REQUEST)
+                        .entity(createErrorResponse("El contenido base64 de la imagen es obligatorio"))
+                        .build();
+            }
+            String fotoUrl = supabaseStorageService.subirImagenBase64(request.getBase64(), request.getFileName());
+            return Response.ok(new FotoUploadResponse(fotoUrl)).build();
+        } catch (IllegalStateException e) {
+            LOGGER.severe("Configuración de Supabase incompleta: " + e.getMessage());
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity(createErrorResponse("Error de configuración de almacenamiento de imágenes"))
+                    .build();
+        } catch (Exception e) {
+            LOGGER.severe("Error subiendo imagen a Supabase: " + e.getMessage());
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity(createErrorResponse("Error subiendo imagen del producto"))
+                    .build();
         }
     }
     

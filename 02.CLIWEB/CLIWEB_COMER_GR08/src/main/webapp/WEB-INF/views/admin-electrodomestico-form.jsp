@@ -26,7 +26,7 @@
     </header>
 
     <section class="panel">
-        <form method="post" action="${pageContext.request.contextPath}/admin/electrodomesticos" class="edit-form">
+        <form method="post" action="${pageContext.request.contextPath}/admin/electrodomesticos" class="edit-form" enctype="multipart/form-data">
             <input type="hidden" name="action" value="<%= esEdicion ? "actualizar" : "crear" %>">
             <% if (esEdicion) { %>
                 <input type="hidden" name="id" value="<%= e.getIdElectrodomestico() %>">
@@ -41,6 +41,18 @@
                 <span>Precio de venta (USD)</span>
                 <input id="precio" name="precio" type="number" step="0.01" min="0" required value="<%= esEdicion && e.getPrecioVenta() != null ? e.getPrecioVenta() : "" %>">
             </label>
+
+            <label class="field">
+                <span>Foto del producto</span>
+                <input id="foto" name="foto" type="file" accept="image/*">
+            </label>
+
+            <% if (esEdicion && e.getFotoUrl() != null && !e.getFotoUrl().isBlank()) { %>
+                <div class="field">
+                    <span>Foto actual</span>
+                    <img src="<%= e.getFotoUrl() %>" alt="Foto actual" style="max-width: 200px; border-radius: 8px; border: 1px solid #e5e7eb;">
+                </div>
+            <% } %>
 
             <div class="form-actions">
                 <a href="${pageContext.request.contextPath}/admin/electrodomesticos" class="ghost-btn">Cancelar</a>

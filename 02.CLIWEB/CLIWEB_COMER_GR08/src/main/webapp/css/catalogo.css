@@ -198,6 +198,7 @@ body {
     padding: 16px 18px;
     text-align: left;
     border-bottom: 1px solid rgba(148, 163, 184, 0.15);
+    vertical-align: middle;
 }
 
 .table th {
@@ -210,6 +211,16 @@ body {
 .table__empty {
     text-align: center;
     color: var(--text-muted);
+}
+
+.table__thumb {
+    width: 80px;
+    height: 80px;
+    max-width: 80px;
+    max-height: 80px;
+    object-fit: cover;
+    border-radius: 6px;
+    display: block;
 }
 
 @media (max-width: 900px) {

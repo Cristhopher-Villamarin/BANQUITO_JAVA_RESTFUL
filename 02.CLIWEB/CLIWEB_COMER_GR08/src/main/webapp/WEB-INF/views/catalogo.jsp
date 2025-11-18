@@ -60,6 +60,7 @@
                     <th>ID</th>
                     <th>Nombre</th>
                     <th>Precio</th>
+                    <th>Foto</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -69,6 +70,11 @@
                             <td><%= e.getIdElectrodomestico() %></td>
                             <td><%= e.getNombre() %></td>
                             <td>$<%= e.getPrecioVenta() %></td>
+                            <td>
+                                <% if (e.getFotoUrl() != null && !e.getFotoUrl().isBlank()) { %>
+                                    <img src="<%= e.getFotoUrl() %>" alt="Foto" class="table__thumb">
+                                <% } %>
+                            </td>
                         </tr>
                     <% } %>
                 <% } else { %>

@@ -4,16 +4,21 @@ import ec.edu.monster.model.Electrodomestico;
 import ec.edu.monster.model.LoginResponse;
 import ec.edu.monster.service.ElectrodomesticoService;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.http.Part;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 @WebServlet(name = "AdminElectrodomesticoServlet", urlPatterns = {"/admin/electrodomesticos"})
+@MultipartConfig
 public class AdminElectrodomesticoServlet extends HttpServlet {
 
     private final ElectrodomesticoService electrodomesticoService = new ElectrodomesticoService();
@@ -76,12 +81,31 @@ public class AdminElectrodomesticoServlet extends HttpServlet {
             if ("crear".equals(action)) {
                 String nombre = request.getParameter("nombre");
                 double precio = Double.parseDouble(request.getParameter("precio"));
-                electrodomesticoService.crear(nombre, precio);
+
+                String fotoUrl = null;
+                Part fotoPart = request.getPart("foto");
+                if (fotoPart != null && fotoPart.getSize() > 0) {
+                    byte[] bytes = readAllBytes(fotoPart.getInputStream());
+                    fotoUrl = electrodomesticoService.subirFoto(bytes, fotoPart.getSubmittedFileName());
+                }
+
+                electrodomesticoService.crear(nombre, precio, fotoUrl);
             } else if ("actualizar".equals(action)) {
                 int id = Integer.parseInt(request.getParameter("id"));
                 String nombre = request.getParameter("nombre");
                 double precio = Double.parseDouble(request.getParameter("precio"));
-                electrodomesticoService.actualizar(id, nombre, precio);
+
+                Electrodomestico existente = electrodomesticoService.obtenerPorId(id);
+                String fotoUrlActual = existente != null ? existente.getFotoUrl() : null;
+
+                String fotoUrl = fotoUrlActual;
+                Part fotoPart = request.getPart("foto");
+                if (fotoPart != null && fotoPart.getSize() > 0) {
+                    byte[] bytes = readAllBytes(fotoPart.getInputStream());
+                    fotoUrl = electrodomesticoService.subirFoto(bytes, fotoPart.getSubmittedFileName());
+                }
+
+                electrodomesticoService.actualizar(id, nombre, precio, fotoUrl);
             } else if ("eliminar".equals(action)) {
                 int id = Integer.parseInt(request.getParameter("id"));
                 electrodomesticoService.eliminar(id);
@@ -91,5 +115,15 @@ public class AdminElectrodomesticoServlet extends HttpServlet {
             request.setAttribute("error", "Error al procesar la operación: " + e.getMessage());
             doGet(request, response);
         }
+    }
+
+    private byte[] readAllBytes(InputStream inputStream) throws IOException {
+        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+        byte[] data = new byte[4096];
+        int nRead;
+        while ((nRead = inputStream.read(data, 0, data.length)) != -1) {
+            buffer.write(data, 0, nRead);
+        }
+        return buffer.toByteArray();
     }
 }

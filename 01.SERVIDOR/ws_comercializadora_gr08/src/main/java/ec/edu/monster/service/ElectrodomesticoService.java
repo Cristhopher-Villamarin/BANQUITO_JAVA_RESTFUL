@@ -31,7 +31,8 @@ public class ElectrodomesticoService {
                     ElectrodomesticoResponse electrodomestico = new ElectrodomesticoResponse(
                         rs.getInt("idElectrodomestico"),
                         rs.getString("nombre"),
-                        rs.getBigDecimal("precioVenta")
+                        rs.getBigDecimal("precioVenta"),
+                        rs.getString("fotoUrl")
                     );
                     electrodomesticos.add(electrodomestico);
                 }
@@ -53,7 +54,8 @@ public class ElectrodomesticoService {
                     return new ElectrodomesticoResponse(
                         rs.getInt("idElectrodomestico"),
                         rs.getString("nombre"),
-                        rs.getBigDecimal("precioVenta")
+                        rs.getBigDecimal("precioVenta"),
+                        rs.getString("fotoUrl")
                     );
                 }
             }
@@ -66,17 +68,18 @@ public class ElectrodomesticoService {
     
     public ElectrodomesticoResponse crear(ElectrodomesticoRequest request) {
         try (Connection connection = DatabaseConnection.getConnection()) {
-            String sql = "INSERT INTO ELECTRODOMESTICO (nombre, precioVenta) VALUES (?, ?)";
+            String sql = "INSERT INTO ELECTRODOMESTICO (nombre, precioVenta, fotoUrl) VALUES (?, ?, ?)";
             try (PreparedStatement stmt = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
                 stmt.setString(1, request.getNombre());
                 stmt.setBigDecimal(2, request.getPrecioVenta());
+                stmt.setString(3, request.getFotoUrl());
                 
                 int rowsAffected = stmt.executeUpdate();
                 if (rowsAffected > 0) {
                     ResultSet rs = stmt.getGeneratedKeys();
                     if (rs.next()) {
                         Integer id = rs.getInt(1);
-                        return new ElectrodomesticoResponse(id, request.getNombre(), request.getPrecioVenta());
+                        return new ElectrodomesticoResponse(id, request.getNombre(), request.getPrecioVenta(), request.getFotoUrl());
                     }
                 }
             }
@@ -95,15 +98,16 @@ public class ElectrodomesticoService {
                 return null;
             }
             
-            String sql = "UPDATE ELECTRODOMESTICO SET nombre = ?, precioVenta = ? WHERE idElectrodomestico = ?";
+            String sql = "UPDATE ELECTRODOMESTICO SET nombre = ?, precioVenta = ?, fotoUrl = ? WHERE idElectrodomestico = ?";
             try (PreparedStatement stmt = connection.prepareStatement(sql)) {
                 stmt.setString(1, request.getNombre());
                 stmt.setBigDecimal(2, request.getPrecioVenta());
-                stmt.setInt(3, id);
+                stmt.setString(3, request.getFotoUrl());
+                stmt.setInt(4, id);
                 
                 int rowsAffected = stmt.executeUpdate();
                 if (rowsAffected > 0) {
-                    return new ElectrodomesticoResponse(id, request.getNombre(), request.getPrecioVenta());
+                    return new ElectrodomesticoResponse(id, request.getNombre(), request.getPrecioVenta(), request.getFotoUrl());
                 }
             }
         } catch (SQLException e) {
