@@ -4,6 +4,7 @@ import ec.edu.monster.model.*;
 import ec.edu.monster.service.ElectrodomesticoService;
 import ec.edu.monster.service.VentaService;
 import ec.edu.monster.service.BanquitoService;
+import ec.edu.monster.service.FacturaService;
 import ec.edu.monster.view.ConsoleUI;
 
 import java.math.BigDecimal;
@@ -14,11 +15,13 @@ public class MonsterController {
     private final ElectrodomesticoService electrodomesticoService;
     private final VentaService ventaService;
     private final BanquitoService banquitoService;
+    private final FacturaService facturaService;
     
     public MonsterController() {
         this.electrodomesticoService = new ElectrodomesticoService();
         this.ventaService = new VentaService();
         this.banquitoService = new BanquitoService();
+        this.facturaService = new FacturaService();
     }
     
     public void mostrarMenuPrincipal() {
@@ -49,6 +52,7 @@ public class MonsterController {
             System.out.println("  2. Registrar nueva venta");
             System.out.println("  3. Verificar estado de crédito de cliente");
             System.out.println("  4. Ver tabla de amortización de crédito");
+            System.out.println("  5. Facturas de cliente");
             System.out.println("  0. Cerrar sesión");
             System.out.println();
             
@@ -59,6 +63,7 @@ public class MonsterController {
                 case 2 -> registrarVenta();
                 case 3 -> verificarEstadoCredito();
                 case 4 -> verTablaAmortizacion();
+                case 5 -> verFacturasCliente();
                 case 0 -> {
                     ConsoleUI.mostrarMensajeInfo("Cerrando sesión...");
                     continuar = false;
@@ -142,6 +147,21 @@ public class MonsterController {
                 return;
             }
             
+            // Mostrar catálogo de productos antes de seleccionar qué comprar
+            System.out.println();
+            ConsoleUI.mostrarMensajeInfo("CATÁLOGO DE ELECTRODOMÉSTICOS DISPONIBLES:");
+            List<Electrodomestico> catalogo = electrodomesticoService.listarElectrodomesticos();
+            if (catalogo == null || catalogo.isEmpty()) {
+                ConsoleUI.mostrarMensajeAdvertencia("No hay electrodomésticos disponibles para la venta.");
+                ConsoleUI.pausa();
+                return;
+            }
+            ConsoleUI.mostrarLinea();
+            for (Electrodomestico e : catalogo) {
+                System.out.println("  " + e.toString());
+            }
+            ConsoleUI.mostrarLinea();
+
             // Selección de productos
             System.out.println();
             ConsoleUI.mostrarMensajeInfo("PRODUCTOS A COMPRAR:");
@@ -437,6 +457,128 @@ public class MonsterController {
         } catch (Exception e) {
             System.out.println();
             ConsoleUI.mostrarMensajeError("Error al consultar tabla de amortización: " + e.getMessage());
+            ConsoleUI.pausa();
+        }
+    }
+
+    private void verFacturasCliente() {
+        try {
+            ConsoleUI.limpiarPantalla();
+            ConsoleUI.mostrarEncabezado("CONSULTAR FACTURAS DE CLIENTE");
+            System.out.println();
+
+            String cedula = ConsoleUI.leerLinea("Cédula del cliente: ");
+
+            System.out.println();
+            ConsoleUI.mostrarMensajeInfo("Consultando facturas del cliente...");
+
+            List<Factura> facturas = facturaService.listarFacturasPorCedula(cedula);
+
+            System.out.println();
+
+            if (facturas == null || facturas.isEmpty()) {
+                ConsoleUI.mostrarMensajeAdvertencia("El cliente no tiene facturas registradas");
+                ConsoleUI.pausa();
+                return;
+            }
+
+            ConsoleUI.mostrarLinea();
+            System.out.println("  " + ConsoleUI.BOLD + ConsoleUI.CYAN + "FACTURAS DEL CLIENTE" + ConsoleUI.RESET);
+            ConsoleUI.mostrarLinea();
+            System.out.println();
+
+            System.out.printf("  %-5s %-12s %-15s %-12s %-12s %-12s %-10s%n",
+                    "N°", "Fecha", "Forma pago", "Subtotal", "Descuento", "Total", "Estado");
+            ConsoleUI.mostrarLinea();
+
+            int index = 1;
+            for (Factura f : facturas) {
+                String fecha = f.getFecha();
+                String formaPago = f.getFormaPago();
+                String subtotal = f.getSubtotal() != null ? f.getSubtotal().toPlainString() : "0.00";
+                String descuento = f.getDescuento() != null ? f.getDescuento().toPlainString() : "0.00";
+                String total = f.getTotal() != null ? f.getTotal().toPlainString() : "0.00";
+                String estado = f.getEstado();
+
+                System.out.printf("  %-5s %-12s %-15s $%-11s $%-11s $%-11s %-10s%n",
+                        index,
+                        fecha,
+                        formaPago,
+                        subtotal,
+                        descuento,
+                        total,
+                        estado);
+                index++;
+            }
+
+            ConsoleUI.mostrarLinea();
+            System.out.println();
+            ConsoleUI.mostrarMensajeInfo("Total facturas: " + facturas.size());
+            System.out.println();
+
+            String verDetalle = ConsoleUI.leerLinea("¿Deseas ver el detalle de una factura? (S/N): ");
+            if (!verDetalle.equalsIgnoreCase("S")) {
+                ConsoleUI.pausa();
+                return;
+            }
+
+            int numeroFactura = ConsoleUI.leerEntero("Ingrese el número de la factura: ");
+
+            if (numeroFactura < 1 || numeroFactura > facturas.size()) {
+                ConsoleUI.mostrarMensajeAdvertencia("Número de factura inválido");
+                ConsoleUI.pausa();
+                return;
+            }
+
+            Factura facturaSeleccionada = facturas.get(numeroFactura - 1);
+            Integer idFactura = facturaSeleccionada.getId();
+            if (idFactura == null) {
+                ConsoleUI.mostrarMensajeError("La factura seleccionada no tiene un ID válido en el sistema");
+                ConsoleUI.pausa();
+                return;
+            }
+
+            System.out.println();
+            ConsoleUI.mostrarMensajeInfo("Obteniendo detalle de la factura número " + numeroFactura + "...");
+
+            List<DetalleFactura> detalles = facturaService.listarDetallesPorFactura(idFactura);
+
+            System.out.println();
+
+            if (detalles == null || detalles.isEmpty()) {
+                ConsoleUI.mostrarMensajeAdvertencia("No se encontraron detalles para la factura seleccionada");
+                ConsoleUI.pausa();
+                return;
+            }
+
+            ConsoleUI.mostrarLinea();
+            System.out.println("  " + ConsoleUI.BOLD + ConsoleUI.CYAN + "DETALLE DE LA FACTURA" + ConsoleUI.RESET);
+            ConsoleUI.mostrarLinea();
+            System.out.println();
+
+            System.out.printf("  %-25s %-10s %-12s %-12s%n",
+                    "Producto", "Cantidad", "Precio", "Subtotal");
+            ConsoleUI.mostrarLinea();
+
+            for (DetalleFactura d : detalles) {
+                String producto = d.getNombreElectrodomestico();
+                String cantidad = d.getCantidad() != null ? d.getCantidad().toString() : "0";
+                String precio = d.getPrecioUnitario() != null ? d.getPrecioUnitario().toPlainString() : "0.00";
+                String subtotalLinea = d.getSubtotal() != null ? d.getSubtotal().toPlainString() : "0.00";
+
+                System.out.printf("  %-25s %-10s $%-11s $%-11s%n",
+                        producto,
+                        cantidad,
+                        precio,
+                        subtotalLinea);
+            }
+
+            ConsoleUI.mostrarLinea();
+            ConsoleUI.pausa();
+
+        } catch (Exception e) {
+            System.out.println();
+            ConsoleUI.mostrarMensajeError("Error al consultar facturas: " + e.getMessage());
             ConsoleUI.pausa();
         }
     }
