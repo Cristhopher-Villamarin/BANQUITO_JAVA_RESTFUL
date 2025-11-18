@@ -26,18 +26,20 @@ public class ElectrodomesticoService {
         return HttpClientUtil.get("/electrodomesticos/" + id, Electrodomestico.class);
     }
 
-    public Electrodomestico crear(String nombre, double precio) throws IOException {
+    public Electrodomestico crear(String nombre, double precio, String fotoUrl) throws IOException {
         ElectrodomesticoRequest request = new ElectrodomesticoRequest(
                 nombre,
-                BigDecimal.valueOf(precio)
+                BigDecimal.valueOf(precio),
+                fotoUrl
         );
         return HttpClientUtil.post("/electrodomesticos", request, Electrodomestico.class);
     }
 
-    public Electrodomestico actualizar(int id, String nombre, double precio) throws IOException {
+    public Electrodomestico actualizar(int id, String nombre, double precio, String fotoUrl) throws IOException {
         ElectrodomesticoRequest request = new ElectrodomesticoRequest(
                 nombre,
-                BigDecimal.valueOf(precio)
+                BigDecimal.valueOf(precio),
+                fotoUrl
         );
         return HttpClientUtil.put("/electrodomesticos/" + id, request, Electrodomestico.class);
     }

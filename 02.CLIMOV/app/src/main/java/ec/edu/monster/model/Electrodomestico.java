@@ -6,6 +6,7 @@ public class Electrodomestico {
     private Integer idElectrodomestico;
     private String nombre;
     private BigDecimal precioVenta;
+    private String fotoUrl;
 
     public Electrodomestico() {}
 
@@ -37,6 +38,14 @@ public class Electrodomestico {
 
     public void setPrecioVenta(BigDecimal precioVenta) {
         this.precioVenta = precioVenta;
+    }
+
+    public String getFotoUrl() {
+        return fotoUrl;
+    }
+
+    public void setFotoUrl(String fotoUrl) {
+        this.fotoUrl = fotoUrl;
     }
 
     @Override

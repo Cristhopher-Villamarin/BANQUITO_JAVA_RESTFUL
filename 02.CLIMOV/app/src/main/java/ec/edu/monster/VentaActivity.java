@@ -1,6 +1,8 @@
 package ec.edu.monster;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
@@ -11,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -355,8 +358,23 @@ public class VentaActivity extends AppCompatActivity {
                     View itemView = getLayoutInflater().inflate(
                             R.layout.item_producto_disponible, containerProductos, false);
 
-                    TextView textProducto = itemView.findViewById(R.id.textProducto);
-                    textProducto.setText(String.format("%s - $%.2f", producto.getNombre(), producto.getPrecioVenta()));
+                    TextView textIdProducto = itemView.findViewById(R.id.textIdProducto);
+                    TextView textNombreProducto = itemView.findViewById(R.id.textNombreProducto);
+                    TextView textPrecioProducto = itemView.findViewById(R.id.textPrecioProducto);
+                    ImageView imgFotoProducto = itemView.findViewById(R.id.imgFotoProducto);
+
+                    textIdProducto.setText("ID: " + producto.getIdElectrodomestico());
+                    textNombreProducto.setText(producto.getNombre());
+                    textPrecioProducto.setText(String.format("$%.2f", producto.getPrecioVenta()));
+
+                    String fotoUrl = producto.getFotoUrl();
+                    if (fotoUrl != null && !fotoUrl.isEmpty()) {
+                        imgFotoProducto.setVisibility(View.VISIBLE);
+                        new LoadImageTask(imgFotoProducto).execute(fotoUrl);
+                    } else {
+                        imgFotoProducto.setImageBitmap(null);
+                        imgFotoProducto.setVisibility(View.GONE);
+                    }
 
                     // Agrega click listener directamente
                     itemView.setOnClickListener(v -> mostrarDialogoCantidad(producto));
@@ -460,6 +478,32 @@ public class VentaActivity extends AppCompatActivity {
                 String mensaje = errorMessage != null ? errorMessage : 
                     (response.getMensaje() != null ? response.getMensaje() : "Venta rechazada");
                 Toast.makeText(VentaActivity.this, mensaje, Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
+    private static class LoadImageTask extends AsyncTask<String, Void, Bitmap> {
+        private final ImageView imageView;
+
+        LoadImageTask(ImageView imageView) {
+            this.imageView = imageView;
+        }
+
+        @Override
+        protected Bitmap doInBackground(String... params) {
+            String url = params[0];
+            try {
+                java.io.InputStream in = new java.net.URL(url).openStream();
+                return BitmapFactory.decodeStream(in);
+            } catch (Exception e) {
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(Bitmap bitmap) {
+            if (bitmap != null) {
+                imageView.setImageBitmap(bitmap);
             }
         }
     }

@@ -121,6 +121,7 @@ public class AdminElectrodomesticosActivity extends AppCompatActivity {
                         intent.putExtra("id", electrodomestico.getIdElectrodomestico());
                         intent.putExtra("nombre", electrodomestico.getNombre());
                         intent.putExtra("precio", electrodomestico.getPrecioVenta().doubleValue());
+                        intent.putExtra("fotoUrl", electrodomestico.getFotoUrl());
                         startActivity(intent);
                     } else {
                         // Eliminar
