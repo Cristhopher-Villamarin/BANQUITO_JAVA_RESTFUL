@@ -128,7 +128,7 @@ public class userMenu extends JFrame {
         // Contenedor de tarjetas
         JPanel cardsContainer = new JPanel();
         cardsContainer.setBackground(new Color(20, 25, 35));
-        cardsContainer.setLayout(new GridLayout(1, 4, 18, 0));
+        cardsContainer.setLayout(new GridLayout(1, 5, 18, 0));
 
         // Tarjeta 1: Catálogo
         JPanel cardCatalogo = createCard(
@@ -182,10 +182,24 @@ public class userMenu extends JFrame {
             }
         });
 
+        // Tarjeta 5: Facturas
+        JPanel cardFacturas = createCard(
+                "Facturas",
+                "<html>Consulta las facturas emitidas<br/>a un cliente y sus estados.</html>"
+        );
+        cardFacturas.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                new Factura().setVisible(true);
+                dispose();
+            }
+        });
+
         cardsContainer.add(cardCatalogo);
         cardsContainer.add(cardVenta);
         cardsContainer.add(cardEstado);
         cardsContainer.add(cardAmort);
+        cardsContainer.add(cardFacturas);
 
         menuPanel.add(cardsContainer);
 
