@@ -17,6 +17,9 @@ public class DetalleFactura {
     
     @Column(name = "idElectrodomestico", nullable = false)
     private Integer idElectrodomestico;
+
+    @Transient
+    private String nombreElectrodomestico;
     
     @Column(name = "cantidad", nullable = false)
     private Integer cantidad;
@@ -59,6 +62,14 @@ public class DetalleFactura {
     
     public void setIdElectrodomestico(Integer idElectrodomestico) {
         this.idElectrodomestico = idElectrodomestico;
+    }
+
+    public String getNombreElectrodomestico() {
+        return nombreElectrodomestico;
+    }
+
+    public void setNombreElectrodomestico(String nombreElectrodomestico) {
+        this.nombreElectrodomestico = nombreElectrodomestico;
     }
     
     public Integer getCantidad() {

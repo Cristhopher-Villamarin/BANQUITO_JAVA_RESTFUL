@@ -52,6 +52,10 @@
                     <h2>Tabla de amortización</h2>
                     <p>Consulta cuotas pendientes y montos del financiamiento aprobado.</p>
                 </a>
+                <a href="${pageContext.request.contextPath}/user/facturas/cliente" class="tile">
+                    <h2>Facturas por cliente</h2>
+                    <p>Consulta todas las facturas registradas de un cliente y revisa su detalle.</p>
+                </a>
             </div>
         </section>
     </div>

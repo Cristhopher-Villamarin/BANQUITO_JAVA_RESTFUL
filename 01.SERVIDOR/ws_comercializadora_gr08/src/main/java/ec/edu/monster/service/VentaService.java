@@ -272,4 +272,85 @@ public class VentaService {
         
         return electrodomesticos;
     }
+
+    public List<Factura> listarFacturasPorCedula(String cedula) {
+        List<Factura> facturas = new ArrayList<>();
+        try (Connection connection = DatabaseConnection.getConnection()) {
+            String sql = "SELECT idFactura, cedula, fecha, formaPago, subtotal, descuento, total, estado " +
+                         "FROM FACTURA WHERE cedula = ? ORDER BY fecha DESC, idFactura DESC";
+            try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+                stmt.setString(1, cedula);
+                ResultSet rs = stmt.executeQuery();
+                while (rs.next()) {
+                    Factura factura = new Factura();
+                    factura.setIdFactura(rs.getInt("idFactura"));
+                    factura.setCedula(rs.getString("cedula"));
+                    factura.setFecha(rs.getDate("fecha").toLocalDate());
+                    factura.setFormaPago(rs.getString("formaPago"));
+                    factura.setSubtotal(rs.getBigDecimal("subtotal"));
+                    factura.setDescuento(rs.getBigDecimal("descuento"));
+                    factura.setTotal(rs.getBigDecimal("total"));
+                    factura.setEstado(rs.getString("estado"));
+                    facturas.add(factura);
+                }
+            }
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error listando facturas por cédula", e);
+        }
+        return facturas;
+    }
+
+    public Factura obtenerFacturaPorId(Integer idFactura) {
+        try (Connection connection = DatabaseConnection.getConnection()) {
+            String sql = "SELECT idFactura, cedula, fecha, formaPago, subtotal, descuento, total, estado " +
+                         "FROM FACTURA WHERE idFactura = ?";
+            try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+                stmt.setInt(1, idFactura);
+                ResultSet rs = stmt.executeQuery();
+                if (rs.next()) {
+                    Factura factura = new Factura();
+                    factura.setIdFactura(rs.getInt("idFactura"));
+                    factura.setCedula(rs.getString("cedula"));
+                    factura.setFecha(rs.getDate("fecha").toLocalDate());
+                    factura.setFormaPago(rs.getString("formaPago"));
+                    factura.setSubtotal(rs.getBigDecimal("subtotal"));
+                    factura.setDescuento(rs.getBigDecimal("descuento"));
+                    factura.setTotal(rs.getBigDecimal("total"));
+                    factura.setEstado(rs.getString("estado"));
+                    return factura;
+                }
+            }
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error obteniendo factura por ID", e);
+        }
+        return null;
+    }
+
+    public List<DetalleFactura> listarDetallesPorFactura(Integer idFactura) {
+        List<DetalleFactura> detalles = new ArrayList<>();
+        try (Connection connection = DatabaseConnection.getConnection()) {
+            String sql = "SELECT d.idDetalle, d.idFactura, d.idElectrodomestico, d.cantidad, d.precioUnitario, d.subtotalLinea, e.nombre AS nombreElectrodomestico " +
+                         "FROM DETALLE_FACTURA d " +
+                         "JOIN ELECTRODOMESTICO e ON e.idElectrodomestico = d.idElectrodomestico " +
+                         "WHERE d.idFactura = ? ORDER BY d.idDetalle";
+            try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+                stmt.setInt(1, idFactura);
+                ResultSet rs = stmt.executeQuery();
+                while (rs.next()) {
+                    DetalleFactura detalle = new DetalleFactura();
+                    detalle.setIdDetalle(rs.getInt("idDetalle"));
+                    detalle.setIdFactura(rs.getInt("idFactura"));
+                    detalle.setIdElectrodomestico(rs.getInt("idElectrodomestico"));
+                    detalle.setCantidad(rs.getInt("cantidad"));
+                    detalle.setPrecioUnitario(rs.getBigDecimal("precioUnitario"));
+                    detalle.setSubtotalLinea(rs.getBigDecimal("subtotalLinea"));
+                    detalle.setNombreElectrodomestico(rs.getString("nombreElectrodomestico"));
+                    detalles.add(detalle);
+                }
+            }
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error listando detalles de factura", e);
+        }
+        return detalles;
+    }
 }

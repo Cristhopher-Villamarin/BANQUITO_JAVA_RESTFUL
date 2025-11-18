@@ -9,6 +9,7 @@ public class DetalleFactura {
     private Integer cantidad;
     private BigDecimal precioUnitario;
     private BigDecimal subtotal;
+    private BigDecimal subtotalLinea;
 
     public DetalleFactura() {}
 
@@ -53,10 +54,19 @@ public class DetalleFactura {
     }
 
     public BigDecimal getSubtotal() {
-        return subtotal;
+        return subtotal != null ? subtotal : subtotalLinea;
     }
 
     public void setSubtotal(BigDecimal subtotal) {
         this.subtotal = subtotal;
+    }
+
+    public BigDecimal getSubtotalLinea() {
+        return subtotalLinea;
+    }
+
+    public void setSubtotalLinea(BigDecimal subtotalLinea) {
+        this.subtotalLinea = subtotalLinea;
+        this.subtotal = subtotalLinea;
     }
 }

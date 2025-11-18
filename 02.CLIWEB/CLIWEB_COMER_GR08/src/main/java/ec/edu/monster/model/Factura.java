@@ -5,6 +5,7 @@ import java.util.List;
 
 public class Factura {
     private Integer id;
+    private Integer idFactura;
     private String cedulaCliente;
     private String nombreCliente;
     private String fecha;
@@ -18,11 +19,20 @@ public class Factura {
     public Factura() {}
 
     public Integer getId() {
-        return id;
+        return idFactura != null ? idFactura : id;
     }
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public Integer getIdFactura() {
+        return idFactura;
+    }
+
+    public void setIdFactura(Integer idFactura) {
+        this.idFactura = idFactura;
+        this.id = idFactura;
     }
 
     public String getCedulaCliente() {
