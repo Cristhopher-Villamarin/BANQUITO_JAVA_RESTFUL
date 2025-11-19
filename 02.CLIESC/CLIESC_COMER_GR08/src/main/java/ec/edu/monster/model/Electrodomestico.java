@@ -6,6 +6,8 @@ public class Electrodomestico {
     private Integer idElectrodomestico;
     private String nombre;
     private BigDecimal precioVenta;
+    private String fotoUrl;
+    private String fotoRuta;
 
     public Electrodomestico() {}
 
@@ -13,6 +15,13 @@ public class Electrodomestico {
         this.idElectrodomestico = idElectrodomestico;
         this.nombre = nombre;
         this.precioVenta = precioVenta;
+    }
+
+    public Electrodomestico(Integer idElectrodomestico, String nombre, BigDecimal precioVenta, String fotoRuta) {
+        this.idElectrodomestico = idElectrodomestico;
+        this.nombre = nombre;
+        this.precioVenta = precioVenta;
+        this.fotoRuta = fotoRuta;
     }
 
     public Integer getIdElectrodomestico() {
@@ -37,6 +46,22 @@ public class Electrodomestico {
 
     public void setPrecioVenta(BigDecimal precioVenta) {
         this.precioVenta = precioVenta;
+    }
+
+    public String getFotoUrl() {
+        return fotoUrl;
+    }
+
+    public void setFotoUrl(String fotoUrl) {
+        this.fotoUrl = fotoUrl;
+    }
+
+    public String getFotoRuta() {
+        return fotoRuta;
+    }
+
+    public void setFotoRuta(String fotoRuta) {
+        this.fotoRuta = fotoRuta;
     }
 
     @Override

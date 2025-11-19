@@ -1,12 +1,12 @@
 package ec.edu.monster.view;
 
 import ec.edu.monster.controller.ElectrodomesticoController;
-import org.apache.hc.core5.http.ParseException;
 
 import javax.swing.*;
-import java.awt.*;
 import javax.swing.border.Border;
-import java.io.IOException;
+import java.awt.*;
+import java.io.File;
+import java.io.FileInputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -17,11 +17,16 @@ public class ElectrodomesticoNuevo extends JFrame {
 
     private final ElectrodomesticoController controller = new ElectrodomesticoController();
 
-    // Componentes
+    // Componentes (incluye imagen)
     private JPanel rootPanel, headerPanel, formPanel;
-    private JLabel lblTitulo, lblSubtitulo, lblNombre, lblPrecio;
+    private JLabel lblTitulo, lblSubtitulo, lblNombre, lblPrecio, lblFoto;
     private JTextField txtNombre, txtPrecio;
-    private JButton btnVolver, btnCancelar, btnGuardar;
+    private JButton btnVolver, btnCancelar, btnGuardar, btnElegirFoto;
+    private JLabel lblNombreArchivo;
+
+    // Bytes para la foto
+    private byte[] fotoBytes = null;
+    private String nombreArchivo = null;
 
     public ElectrodomesticoNuevo() {
         initComponents();
@@ -29,7 +34,7 @@ public class ElectrodomesticoNuevo extends JFrame {
 
     private void initComponents() {
         setTitle("Nuevo electrodoméstico");
-        setSize(900, 550);
+        setSize(900, 580);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
@@ -97,6 +102,9 @@ public class ElectrodomesticoNuevo extends JFrame {
         formPanel.setBorder(BorderFactory.createEmptyBorder(25, 30, 25, 30));
         formPanel.setLayout(new BoxLayout(formPanel, BoxLayout.Y_AXIS));
 
+        Border inner = BorderFactory.createEmptyBorder(8, 12, 8, 12);
+        Border whiteLine = BorderFactory.createLineBorder(new Color(70, 90, 130), 1);
+
         // Nombre
         lblNombre = new JLabel("NOMBRE");
         lblNombre.setForeground(new Color(170, 180, 195));
@@ -106,8 +114,6 @@ public class ElectrodomesticoNuevo extends JFrame {
         txtNombre.setBackground(new Color(15, 20, 35));
         txtNombre.setForeground(Color.WHITE);
         txtNombre.setCaretColor(Color.WHITE);
-        Border inner = BorderFactory.createEmptyBorder(8, 12, 8, 12);
-        Border whiteLine = BorderFactory.createLineBorder(new Color(70, 90, 130), 1);
         txtNombre.setBorder(BorderFactory.createCompoundBorder(whiteLine, inner));
 
         // Precio
@@ -121,17 +127,43 @@ public class ElectrodomesticoNuevo extends JFrame {
         txtPrecio.setCaretColor(Color.WHITE);
         txtPrecio.setBorder(BorderFactory.createCompoundBorder(whiteLine, inner));
 
-        // Panel de botones
-        JPanel botonesPanel = new JPanel();
+        // FOTO DEL PRODUCTO
+        lblFoto = new JLabel("FOTO DEL PRODUCTO");
+        lblFoto.setForeground(new Color(170, 180, 195));
+        lblFoto.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+
+        JPanel panelFoto = new JPanel(new BorderLayout(10, 0));
+        panelFoto.setBackground(new Color(10, 18, 34));
+
+        btnElegirFoto = new JButton("Choose File");
+        btnElegirFoto.setFocusPainted(false);
+        btnElegirFoto.setForeground(Color.WHITE);
+        btnElegirFoto.setBackground(new Color(20, 25, 45));
+        btnElegirFoto.setBorder(BorderFactory.createLineBorder(new Color(120, 120, 150)));
+        btnElegirFoto.setPreferredSize(new Dimension(130, 34));
+        btnElegirFoto.addActionListener(e -> seleccionarFoto());
+
+        lblNombreArchivo = new JLabel("No file chosen");
+        lblNombreArchivo.setForeground(new Color(170, 180, 195));
+        lblNombreArchivo.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+
+        JPanel archivoPanel = new JPanel(new BorderLayout());
+        archivoPanel.setBackground(new Color(15, 20, 35));
+        archivoPanel.setBorder(BorderFactory.createCompoundBorder(whiteLine, inner));
+        archivoPanel.add(lblNombreArchivo, BorderLayout.CENTER);
+
+        panelFoto.add(btnElegirFoto, BorderLayout.WEST);
+        panelFoto.add(archivoPanel, BorderLayout.CENTER);
+
+        // Botones
+        JPanel botonesPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
         botonesPanel.setBackground(new Color(10, 18, 34));
-        botonesPanel.setLayout(new FlowLayout(FlowLayout.RIGHT, 15, 10));
 
         btnCancelar = new JButton("CANCELAR");
         btnCancelar.setFocusPainted(false);
         btnCancelar.setForeground(Color.WHITE);
         btnCancelar.setBackground(new Color(20, 25, 45));
         btnCancelar.setBorder(BorderFactory.createLineBorder(new Color(120, 120, 150)));
-        btnCancelar.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         btnCancelar.setPreferredSize(new Dimension(130, 36));
         btnCancelar.addActionListener(e -> volverAlListado());
 
@@ -140,31 +172,58 @@ public class ElectrodomesticoNuevo extends JFrame {
         btnGuardar.setForeground(Color.WHITE);
         btnGuardar.setBackground(new Color(0, 160, 255));
         btnGuardar.setBorder(BorderFactory.createEmptyBorder(5, 20, 5, 20));
-        btnGuardar.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         btnGuardar.setPreferredSize(new Dimension(130, 36));
         btnGuardar.addActionListener(e -> guardarNuevo());
 
         botonesPanel.add(btnCancelar);
         botonesPanel.add(btnGuardar);
 
-        // Add al form
+        // Agregar todo al form
         formPanel.add(lblNombre);
         formPanel.add(Box.createVerticalStrut(5));
         formPanel.add(txtNombre);
         formPanel.add(Box.createVerticalStrut(20));
+
         formPanel.add(lblPrecio);
         formPanel.add(Box.createVerticalStrut(5));
         formPanel.add(txtPrecio);
+        formPanel.add(Box.createVerticalStrut(20));
+
+        formPanel.add(lblFoto);
+        formPanel.add(Box.createVerticalStrut(5));
+        formPanel.add(panelFoto);
         formPanel.add(Box.createVerticalStrut(30));
+
         formPanel.add(botonesPanel);
 
         rootPanel.add(formPanel);
     }
 
-    // -------------------------------------------------------------------------
-    // FUNCIONALIDAD
-    // -------------------------------------------------------------------------
+    // -------------------------------
+    // Subir imagen
+    // -------------------------------
+    private void seleccionarFoto() {
+        JFileChooser chooser = new JFileChooser();
+        chooser.setDialogTitle("Seleccionar foto del producto");
+        chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 
+        int r = chooser.showOpenDialog(this);
+        if (r == JFileChooser.APPROVE_OPTION) {
+            File archivo = chooser.getSelectedFile();
+            nombreArchivo = archivo.getName();
+            lblNombreArchivo.setText(nombreArchivo);
+
+            try (FileInputStream fis = new FileInputStream(archivo)) {
+                fotoBytes = controller.readAllBytes(fis);
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, "Error leyendo imagen: " + ex.getMessage());
+            }
+        }
+    }
+
+    // -------------------------------
+    // Guardar nuevo producto
+    // -------------------------------
     private void guardarNuevo() {
         String nombre = txtNombre.getText().trim();
         String precioStr = txtPrecio.getText().trim();
@@ -179,23 +238,25 @@ public class ElectrodomesticoNuevo extends JFrame {
         double precio;
         try {
             precio = Double.parseDouble(precioStr);
-        } catch (NumberFormatException ex) {
+        } catch (Exception ex) {
             JOptionPane.showMessageDialog(this,
-                    "El precio debe ser numérico.",
-                    "Formato incorrecto", JOptionPane.WARNING_MESSAGE);
+                    "El precio debe ser un número válido.",
+                    "Error", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
         try {
-            controller.crearElectrodomestico(nombre, precio);
+            controller.crear(nombre, precio, fotoBytes, nombreArchivo);
+
             JOptionPane.showMessageDialog(this,
                     "Electrodoméstico creado correctamente.",
                     "Éxito", JOptionPane.INFORMATION_MESSAGE);
             volverAlListado();
-        } catch (IOException | ParseException ex) {
-            logger.log(Level.SEVERE, "Error al crear electrodoméstico", ex);
+
+        } catch (Exception ex) {
+            logger.log(Level.SEVERE, "Error", ex);
             JOptionPane.showMessageDialog(this,
-                    "Error al guardar: " + ex.getMessage(),
+                    "Error al crear: " + ex.getMessage(),
                     "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
@@ -203,20 +264,5 @@ public class ElectrodomesticoNuevo extends JFrame {
     private void volverAlListado() {
         new adminInicio().setVisible(true);
         dispose();
-    }
-
-    public static void main(String[] args) {
-        try {
-            for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (Exception ex) {
-            logger.log(Level.SEVERE, null, ex);
-        }
-
-        java.awt.EventQueue.invokeLater(() -> new ElectrodomesticoNuevo().setVisible(true));
     }
 }

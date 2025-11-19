@@ -16,7 +16,7 @@ import java.util.concurrent.TimeUnit;
 public class HttpClientUtil {
     // Para emulador Android usar: http://10.0.2.2:8080
     // Para dispositivo físico usar la IP de tu máquina: http://192.168.x.x:8080
-    private static String BASE_URL = "http://192.168.1.7:8080/ws_comercializadora_gr08/api";
+    private static String BASE_URL = "http://10.95.194.42:8080/ws_comercializadora_gr08/api";
     private static final Gson gson = new GsonBuilder()
             .setDateFormat("yyyy-MM-dd")
             .create();

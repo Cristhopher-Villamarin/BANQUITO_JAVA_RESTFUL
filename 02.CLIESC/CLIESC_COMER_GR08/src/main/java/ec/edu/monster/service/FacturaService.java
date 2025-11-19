@@ -48,7 +48,24 @@ public class FacturaService {
     }
     
     public Factura obtenerFacturaPorId(int id) throws IOException, ParseException {
-        return HttpClientUtil.get("/facturas/" + id, Factura.class);
+        String jsonResponse = HttpClientUtil.get("/facturas/" + id, String.class);
+        JsonObject root = gson.fromJson(jsonResponse, JsonObject.class);
+        if (root == null) {
+            return null;
+        }
+
+        JsonElement facturaElement = root.get("factura");
+        if (facturaElement == null || facturaElement.isJsonNull()) {
+            return null;
+        }
+
+        Factura factura = gson.fromJson(facturaElement, Factura.class);
+        // Ajustar id si el backend lo envía como idFactura
+        if (factura != null && factura.getId() == null && facturaElement.getAsJsonObject().has("idFactura")) {
+            factura.setId(facturaElement.getAsJsonObject().get("idFactura").getAsInt());
+        }
+
+        return factura;
     }
     
     public ReporteVentas obtenerReporteVentas() throws IOException, ParseException {

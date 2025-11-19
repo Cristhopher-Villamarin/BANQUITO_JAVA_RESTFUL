@@ -2,35 +2,66 @@ package ec.edu.monster.controller;
 
 import ec.edu.monster.model.Electrodomestico;
 import ec.edu.monster.service.ElectrodomesticoService;
-import org.apache.hc.core5.http.ParseException;
 
-import java.io.IOException;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.util.List;
 
 public class ElectrodomesticoController {
-    private final ElectrodomesticoService electrodomesticoService;
 
-    public ElectrodomesticoController() {
-        this.electrodomesticoService = new ElectrodomesticoService();
-    }
+    private final ElectrodomesticoService electrodomesticoService = new ElectrodomesticoService();
 
-    public List<Electrodomestico> listarElectrodomesticos() throws IOException, ParseException {
+    /** LISTAR */
+    public List<Electrodomestico> listar() throws Exception {
         return electrodomesticoService.listarElectrodomesticos();
     }
 
-    public Electrodomestico obtenerPorId(int id) throws IOException, ParseException {
+    /** OBTENER POR ID */
+    public Electrodomestico obtenerPorId(int id) throws Exception {
         return electrodomesticoService.obtenerPorId(id);
     }
 
-    public Electrodomestico crearElectrodomestico(String nombre, double precio) throws IOException, ParseException {
-        return electrodomesticoService.crear(nombre, precio);
+    /** CREAR */
+    public void crear(String nombre, double precio, byte[] fotoBytes, String nombreArchivo) throws Exception {
+        String fotoUrl = null;
+
+        if (fotoBytes != null && fotoBytes.length > 0) {
+            fotoUrl = electrodomesticoService.subirFoto(fotoBytes, nombreArchivo);
+        }
+
+        electrodomesticoService.crear(nombre, precio, fotoUrl);
     }
 
-    public Electrodomestico actualizarElectrodomestico(int id, String nombre, double precio) throws IOException, ParseException {
-        return electrodomesticoService.actualizar(id, nombre, precio);
+    /** ACTUALIZAR */
+    public void actualizar(int id, String nombre, double precio, byte[] fotoBytes, String nombreArchivo) throws Exception {
+
+        Electrodomestico actual = electrodomesticoService.obtenerPorId(id);
+
+        String fotoUrl = (actual != null) ? actual.getFotoUrl() : null;
+
+        // Si el usuario seleccionó una nueva foto
+        if (fotoBytes != null && fotoBytes.length > 0) {
+            fotoUrl = electrodomesticoService.subirFoto(fotoBytes, nombreArchivo);
+        }
+
+        electrodomesticoService.actualizar(id, nombre, precio, fotoUrl);
     }
 
-    public String eliminarElectrodomestico(int id) throws IOException, ParseException {
-        return electrodomesticoService.eliminar(id);
+    /** ELIMINAR */
+    public void eliminar(int id) throws Exception {
+        electrodomesticoService.eliminar(id);
+    }
+
+    /** LEER BYTES (para cargar imágenes de JFileChooser) */
+    public byte[] readAllBytes(InputStream inputStream) throws Exception {
+        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+        byte[] data = new byte[4096];
+        int nRead;
+
+        while ((nRead = inputStream.read(data)) != -1) {
+            buffer.write(data, 0, nRead);
+        }
+
+        return buffer.toByteArray();
     }
 }

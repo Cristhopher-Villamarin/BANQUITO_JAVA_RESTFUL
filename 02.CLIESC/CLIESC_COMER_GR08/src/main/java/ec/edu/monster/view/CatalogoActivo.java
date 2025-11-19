@@ -3,11 +3,15 @@ package ec.edu.monster.view;
 import ec.edu.monster.controller.ElectrodomesticoController;
 import ec.edu.monster.model.Electrodomestico;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
+import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.math.BigDecimal;
+import java.net.URL;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -83,7 +87,7 @@ public class CatalogoActivo extends JFrame {
         leftPanel.add(lblSub);
         leftPanel.add(Box.createVerticalStrut(18));
 
-        // Tarjetas de info (15 productos / USD)
+        // Tarjetas de info (productos / USD)
         JPanel cardsPanel = new JPanel();
         cardsPanel.setBackground(new Color(10, 30, 60));
         cardsPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 15, 0));
@@ -187,9 +191,11 @@ public class CatalogoActivo extends JFrame {
         lblFiltro.setFont(new Font("Segoe UI", Font.PLAIN, 12));
         lblFiltro.setHorizontalAlignment(SwingConstants.RIGHT);
 
-        top.add(new JLabel("TABLA MAESTRA"), BorderLayout.NORTH);
-        ((JLabel) top.getComponent(0)).setForeground(new Color(160, 175, 190));
-        ((JLabel) top.getComponent(0)).setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        JLabel lblTablaMaestra = new JLabel("TABLA MAESTRA");
+        lblTablaMaestra.setForeground(new Color(160, 175, 190));
+        lblTablaMaestra.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+
+        top.add(lblTablaMaestra, BorderLayout.NORTH);
 
         JPanel mid = new JPanel(new BorderLayout());
         mid.setBackground(new Color(10, 18, 34));
@@ -200,8 +206,8 @@ public class CatalogoActivo extends JFrame {
 
         tablaPanel.add(top, BorderLayout.NORTH);
 
-        // Modelo y tabla
-        modelo = new DefaultTableModel(new String[]{"ID", "NOMBRE", "PRECIO"}, 0) {
+        // Modelo con columna FOTO
+        modelo = new DefaultTableModel(new String[]{"ID", "NOMBRE", "PRECIO", "FOTO"}, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false; // solo lectura
@@ -212,7 +218,7 @@ public class CatalogoActivo extends JFrame {
         tabla.setBackground(new Color(10, 18, 34));
         tabla.setForeground(Color.WHITE);
         tabla.setGridColor(new Color(30, 40, 60));
-        tabla.setRowHeight(38);
+        tabla.setRowHeight(110); // más alto para la imagen
         tabla.setFont(new Font("Segoe UI", Font.PLAIN, 13));
         tabla.setSelectionBackground(new Color(20, 35, 60));
         tabla.setSelectionForeground(Color.WHITE);
@@ -222,6 +228,10 @@ public class CatalogoActivo extends JFrame {
         header.setForeground(new Color(180, 190, 205));
         header.setFont(new Font("Segoe UI", Font.BOLD, 13));
         header.setBorder(BorderFactory.createMatteBorder(0, 0, 2, 0, new Color(50, 70, 100)));
+
+        // Renderer para la columna FOTO
+        tabla.getColumnModel().getColumn(3).setCellRenderer(new FotoRenderer());
+        tabla.getColumnModel().getColumn(3).setPreferredWidth(120);
 
         JScrollPane scroll = new JScrollPane(tabla);
         scroll.getViewport().setBackground(new Color(10, 18, 34));
@@ -233,18 +243,71 @@ public class CatalogoActivo extends JFrame {
     }
 
     // -------------------------------------------------------------------------
+    // RENDERER PARA FOTO
+    // -------------------------------------------------------------------------
+    private static class FotoRenderer extends DefaultTableCellRenderer {
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value,
+                                                       boolean isSelected, boolean hasFocus,
+                                                       int row, int column) {
+            JLabel label = (JLabel) super.getTableCellRendererComponent(
+                    table, "", isSelected, hasFocus, row, column);
+
+            label.setHorizontalAlignment(SwingConstants.CENTER);
+            label.setBorder(null);
+            label.setOpaque(true);
+            label.setBackground(isSelected ? new Color(20, 35, 60) : new Color(10, 18, 34));
+
+            if (value instanceof ImageIcon) {
+                label.setIcon((ImageIcon) value);
+                label.setText("");
+            } else {
+                label.setIcon(null);
+                label.setText("SIN IMAGEN");
+                label.setForeground(new Color(160, 175, 190));
+            }
+
+            return label;
+        }
+    }
+
+    // -------------------------------------------------------------------------
     // CARGAR DATOS
     // -------------------------------------------------------------------------
     private void cargarDatos() {
         modelo.setRowCount(0);
         try {
-            List<Electrodomestico> lista = controller.listarElectrodomesticos();
+            List<Electrodomestico> lista = controller.listar();
+
             for (Electrodomestico e : lista) {
                 BigDecimal precio = e.getPrecioVenta();
+                String precioStr = "";
+                if (precio != null) {
+                    precioStr = "$" + precio.toString();
+                }
+
+                // Cargar icono desde fotoUrl (si existe)
+                ImageIcon icon = null;
+                try {
+                    String fotoUrl = e.getFotoUrl(); // <--- asegúrate de tener este getter
+                    if (fotoUrl != null && !fotoUrl.isBlank()) {
+                        URL url = new URL(fotoUrl);
+                        BufferedImage img = ImageIO.read(url);
+                        if (img != null) {
+                            Image scaled = img.getScaledInstance(90, 90, Image.SCALE_SMOOTH);
+                            icon = new ImageIcon(scaled);
+                        }
+                    }
+                } catch (Exception ex) {
+                    logger.log(Level.WARNING, "No se pudo cargar imagen para id "
+                            + e.getIdElectrodomestico(), ex);
+                }
+
                 modelo.addRow(new Object[]{
                         e.getIdElectrodomestico(),
                         e.getNombre(),
-                        precio != null ? "$" + precio.toString() : ""
+                        precioStr,
+                        (icon != null) ? icon : "SIN_IMAGEN"
                 });
             }
 
