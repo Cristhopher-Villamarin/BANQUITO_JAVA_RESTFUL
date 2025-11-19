@@ -15,7 +15,7 @@ import java.io.IOException;
 import org.apache.hc.core5.http.ParseException;
 
 public class HttpClientUtil {
-    private static String BASE_URL = "http://localhost:8080/ws_comercializadora_gr08/api";
+    private static String BASE_URL = "http://10.95.194.169:8080/ws_comercializadora_gr08/api";
     private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
     private static String authToken = null;
 

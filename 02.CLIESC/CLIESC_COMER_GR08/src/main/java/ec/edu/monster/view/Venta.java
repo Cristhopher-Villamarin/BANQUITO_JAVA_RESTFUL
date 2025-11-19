@@ -14,8 +14,11 @@ import javax.swing.border.Border;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.DefaultTableCellRenderer;
+import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.File;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -530,11 +533,7 @@ public class Venta extends JFrame {
 
             if (catalogo != null) {
                 for (Electrodomestico e : catalogo) {
-                    if (e.getIdElectrodomestico() != null) {
-                        String ruta = RUTA_IMAGENES + File.separator
-                                + e.getIdElectrodomestico() + ".png";
-                        e.setFotoRuta(ruta);
-                    }
+                    // Las imágenes vienen desde fotoUrl (como en CatalogoActivo)
                     cardsGrid.add(crearCardProducto(e));
                 }
 
@@ -576,17 +575,24 @@ public class Venta extends JFrame {
     lblFoto.setOpaque(true);
     lblFoto.setBackground(new Color(8, 16, 32));
 
-    String ruta = e.getFotoRuta();
-    if (ruta != null && !ruta.isEmpty()) {
-        File f = new File(ruta);
-        if (f.exists()) {
-            ImageIcon icon = new ImageIcon(f.getAbsolutePath());
-            Image img = icon.getImage().getScaledInstance(120, 80, Image.SCALE_SMOOTH);
-            lblFoto.setIcon(new ImageIcon(img));
-        } else {
-            lblFoto.setText("SIN IMAGEN");
-            lblFoto.setForeground(new Color(140, 150, 170));
+    ImageIcon icon = null;
+    try {
+        String fotoUrl = e.getFotoUrl();
+        if (fotoUrl != null && !fotoUrl.isBlank()) {
+            URL url = new URL(fotoUrl);
+            BufferedImage img = ImageIO.read(url);
+            if (img != null) {
+                Image scaled = img.getScaledInstance(120, 80, Image.SCALE_SMOOTH);
+                icon = new ImageIcon(scaled);
+            }
         }
+    } catch (Exception ex) {
+        logger.log(Level.WARNING, "No se pudo cargar imagen para id "
+                + e.getIdElectrodomestico(), ex);
+    }
+
+    if (icon != null) {
+        lblFoto.setIcon(icon);
     } else {
         lblFoto.setText("SIN IMAGEN");
         lblFoto.setForeground(new Color(140, 150, 170));
