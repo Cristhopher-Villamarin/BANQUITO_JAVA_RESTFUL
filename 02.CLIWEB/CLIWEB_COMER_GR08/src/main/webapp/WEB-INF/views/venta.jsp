@@ -89,30 +89,47 @@
             <article class="card card--full">
                 <header>
                     <p class="card__eyebrow">Productos</p>
-                 
+                    <h2>Selecciona productos del catálogo</h2>
                 </header>
 
                 <% if (lista != null && !lista.isEmpty()) { %>
-                <div class="product-selector">
-                    <div class="product-selector__control">
-                        <label for="productoSelect">Listado</label>
-                        <select id="productoSelect">
+                <div class="products-browser">
+                    <div class="products-browser__scroll">
+                        <div class="cards-grid">
                             <% for (Electrodomestico e : lista) {
                                    String nombreAttr = e.getNombre() != null ? e.getNombre().replace("\"", "&quot;") : "";
+                                   String fotoAttr = e.getFotoUrl() != null ? e.getFotoUrl().replace("\"", "&quot;") : "";
                             %>
-                                <option value="<%= e.getIdElectrodomestico() %>"
-                                        data-nombre="<%= nombreAttr %>"
-                                        data-precio="<%= e.getPrecioVenta() %>">
-                                    <%= e.getIdElectrodomestico() %> - <%= e.getNombre() %> ($<%= e.getPrecioVenta() %>)
-                                </option>
+                                <article class="product-card"
+                                         data-producto-id="<%= e.getIdElectrodomestico() %>"
+                                         data-nombre="<%= nombreAttr %>"
+                                         data-precio="<%= e.getPrecioVenta() %>"
+                                         data-foto="<%= fotoAttr %>">
+                                    <div class="product-card__media">
+                                        <% if (e.getFotoUrl() != null && !e.getFotoUrl().isBlank()) { %>
+                                            <img src="<%= e.getFotoUrl() %>" alt="Foto de <%= e.getNombre() %>" class="product-card__image">
+                                        <% } else { %>
+                                            <div class="product-card__placeholder">Sin imagen</div>
+                                        <% } %>
+                                    </div>
+                                    <div class="product-card__body">
+                                        <header class="product-card__header">
+                                            <span class="product-card__id">ID #<%= e.getIdElectrodomestico() %></span>
+                                            <h3 class="product-card__title"><%= e.getNombre() %></h3>
+                                        </header>
+                                        <p class="product-card__price">$<%= e.getPrecioVenta() %></p>
+                                        <div class="product-card__actions">
+                                            <div class="product-card__qty">
+                                                <label>Cant.</label>
+                                                <input type="number" class="product-card__qty-input" min="1" value="1">
+                                            </div>
+                                            <button type="button" class="primary-btn product-card__add">Añadir</button>
+                                        </div>
+                                    </div>
+                                </article>
                             <% } %>
-                        </select>
+                        </div>
                     </div>
-                    <div class="product-selector__control">
-                        <label for="cantidadInput">Cantidad</label>
-                        <input type="number" id="cantidadInput" min="1" value="1">
-                    </div>
-                    <button type="button" class="primary-btn product-selector__add" id="agregarProducto">Agregar</button>
                 </div>
 
                 <div class="selected-products">
@@ -158,16 +175,13 @@
 <% if (lista != null && !lista.isEmpty()) { %>
 <script>
     (function () {
-        const select = document.getElementById('productoSelect');
-        const qtyInput = document.getElementById('cantidadInput');
-        const addButton = document.getElementById('agregarProducto');
         const tableBody = document.querySelector('#productosSeleccionados tbody');
 
         function renderEmptyRow() {
             if (!tableBody.querySelector('tr')) {
                 const emptyRow = document.createElement('tr');
                 emptyRow.classList.add('table__empty-row');
-                emptyRow.innerHTML = '<td colspan="4" class="table__empty">Aún no hay productos agregados.</td>';
+                emptyRow.innerHTML = '<td colspan="6" class="table__empty">Aún no hay productos agregados.</td>';
                 tableBody.appendChild(emptyRow);
             }
         }
@@ -176,21 +190,7 @@
             return new Intl.NumberFormat('es-EC', { style: 'currency', currency: 'USD' }).format(value);
         }
 
-        function addProduct() {
-            const option = select.options[select.selectedIndex];
-            if (!option) {
-                alert('Selecciona un producto.');
-                return;
-            }
-            const cantidad = parseInt(qtyInput.value, 10);
-            if (!cantidad || cantidad <= 0) {
-                alert('Ingresa una cantidad válida.');
-                return;
-            }
-
-            const productoId = option.value;
-            const nombre = option.dataset.nombre || option.textContent;
-            const precioUnitario = parseFloat(option.dataset.precio || '0');
+        function addProduct(productoId, nombre, precioUnitario, cantidad, fotoUrl) {
             const existingRow = tableBody.querySelector(`tr[data-producto-id="${productoId}"]`);
 
             if (existingRow) {
@@ -209,37 +209,106 @@
 
             const row = document.createElement('tr');
             row.dataset.productoId = productoId;
-            row.innerHTML = `
-                <td>\${productoId}<input type="hidden" name="productoId" value="\${productoId}"></td>
-                <td>\${nombre}</td>
-                <td class="price-text">\${formatCurrency(precioUnitario)}</td>
-                <td>
-                    <span class="cantidad-text">\${cantidad}</span>
-                    <input type="hidden" name="cantidad" value="\${cantidad}">
-                </td>
-                <td class="total-text">\${formatCurrency(precioUnitario * cantidad)}</td>
-                <td class="table__actions">
-                    <button type="button" class="ghost-btn ghost-btn--inline" aria-label="Eliminar" data-remove="\${productoId}">Eliminar</button>
-                </td>
-            `;
+            row.dataset.precio = String(precioUnitario);
+
+            const safeFoto = fotoUrl && fotoUrl.trim() !== '' ? fotoUrl : '';
+            const thumbHtml = safeFoto
+                ? '<img src="' + safeFoto + '" alt="Foto ' + nombre + '" class="mini-thumb">'
+                : '<div class="mini-thumb mini-thumb--empty">Sin imagen</div>';
+
+            row.innerHTML =
+                '<td>' +
+                    '<div class="mini-product-cell">' +
+                        '<span class="mini-product-id">ID #' + productoId + '</span>' +
+                        thumbHtml +
+                    '</div>' +
+                    '<input type="hidden" name="productoId" value="' + productoId + '">' +
+                '</td>' +
+                '<td>' + nombre + '</td>' +
+                '<td class="price-text">' + formatCurrency(precioUnitario) + '</td>' +
+                '<td>' +
+                    '<div class="qty-controls">' +
+                        '<button type="button" class="qty-btn" data-action="dec" aria-label="Disminuir cantidad">-</button>' +
+                        '<span class="cantidad-text">' + cantidad + '</span>' +
+                        '<button type="button" class="qty-btn" data-action="inc" aria-label="Aumentar cantidad">+</button>' +
+                    '</div>' +
+                    '<input type="hidden" name="cantidad" value="' + cantidad + '">' +
+                '</td>' +
+                '<td class="total-text">' + formatCurrency(precioUnitario * cantidad) + '</td>' +
+                '<td class="table__actions">' +
+                    '<button type="button" class="ghost-btn ghost-btn--inline" aria-label="Eliminar" data-remove="' + productoId + '">Eliminar</button>' +
+                '</td>';
             tableBody.appendChild(row);
         }
 
-        function removeProduct(productoId) {
-            const row = tableBody.querySelector(`tr[data-producto-id="${productoId}"]`);
-            if (row) {
-                row.remove();
-                if (!tableBody.querySelector('tr')) {
-                    renderEmptyRow();
-                }
-            }
-        }
+        const productCards = document.querySelectorAll('.product-card');
 
-        addButton.addEventListener('click', addProduct);
+        productCards.forEach(card => {
+            const addButton = card.querySelector('.product-card__add');
+            const qtyInput = card.querySelector('.product-card__qty-input');
+            const productoId = card.dataset.productoId;
+            const nombre = card.dataset.nombre || '';
+            const precioUnitario = parseFloat(card.dataset.precio || '0');
+            const fotoUrl = card.dataset.foto || '';
+
+            if (!addButton || !qtyInput) {
+                return;
+            }
+
+            addButton.addEventListener('click', () => {
+                const cantidad = parseInt(qtyInput.value, 10);
+                if (!cantidad || cantidad <= 0) {
+                    alert('Ingresa una cantidad válida.');
+                    return;
+                }
+                addProduct(productoId, nombre, precioUnitario, cantidad, fotoUrl);
+            });
+        });
+
         tableBody.addEventListener('click', (event) => {
+            const qtyButton = event.target.closest('.qty-btn');
+            if (qtyButton) {
+                const row = qtyButton.closest('tr');
+                if (!row) return;
+
+                const action = qtyButton.dataset.action;
+                const cantidadInput = row.querySelector('input[name="cantidad"]');
+                const cantidadText = row.querySelector('.cantidad-text');
+                const totalCell = row.querySelector('.total-text');
+                const precioUnitario = parseFloat(row.dataset.precio || '0');
+
+                if (!cantidadInput || !cantidadText || !totalCell || !precioUnitario) return;
+
+                let cantidadActual = parseInt(cantidadInput.value, 10) || 0;
+                if (action === 'inc') {
+                    cantidadActual += 1;
+                } else if (action === 'dec') {
+                    cantidadActual -= 1;
+                }
+
+                if (cantidadActual <= 0) {
+                    row.remove();
+                    if (!tableBody.querySelector('tr')) {
+                        renderEmptyRow();
+                    }
+                    return;
+                }
+
+                cantidadInput.value = cantidadActual;
+                cantidadText.textContent = cantidadActual;
+                totalCell.textContent = formatCurrency(precioUnitario * cantidadActual);
+                return;
+            }
+
             const button = event.target.closest('button[data-remove]');
             if (button) {
-                removeProduct(button.dataset.remove);
+                const row = button.closest('tr');
+                if (row) {
+                    row.remove();
+                    if (!tableBody.querySelector('tr')) {
+                        renderEmptyRow();
+                    }
+                }
             }
         });
 
